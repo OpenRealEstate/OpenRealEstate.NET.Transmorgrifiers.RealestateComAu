@@ -1,0 +1,53 @@
+﻿namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.RealEstateComAu
+{
+    public static class XmlFeatureHelpers
+    {
+        public static readonly string[] OtherFeatureNames =
+        {
+            "airConditioning",
+            "alarmSystem",
+            "balcony",
+            "broadband",
+            "builtInRobes",
+            "courtyard",
+            "deck",
+            "dishwasher",
+            "ductedCooling",
+            "ductedHeating",
+            "evaporativeCooling",
+            "floorboards",
+            "fullyFenced",
+            "furnished",
+            "gasHeating",
+            "greyWaterSystem",
+            "gym",
+            "hydronicHeating",
+            "insideSpa",
+            "intercom",
+            "openFirePlace",
+            "outdoorEnt",
+            "outsideSpa",
+            "payTV",
+            "petFriendly",
+            "pool",
+            "poolAboveGround",
+            "poolInGround",
+            "remoteGarage",
+            "reverseCycleAirCon",
+            "rumpusRoom",
+            "secureParking",
+            "shed",
+            "smokers",
+            "solarHotWater",
+            "solarPanels",
+            "spa",
+            "splitSystemAirCon",
+            "splitSystemHeating",
+            "study",
+            "tennisCourt",
+            "vacuumSystem",
+            "waterTank",
+            "workshop"
+        };
+    }
+}

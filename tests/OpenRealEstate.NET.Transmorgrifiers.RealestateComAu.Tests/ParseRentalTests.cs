@@ -5,7 +5,6 @@ using OpenRealEstate.NET.Core;
 using OpenRealEstate.NET.Core.Rental;
 using OpenRealEstate.NET.FakeData;
 using OpenRealEstate.NET.Transmorgrifiers.Core;
-using OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.RealEstateComAu;
 using Shouldly;
 using Xunit;
 

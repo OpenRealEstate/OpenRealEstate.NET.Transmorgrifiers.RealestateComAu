@@ -9,7 +9,6 @@ using OpenRealEstate.NET.Core;
 using OpenRealEstate.NET.Core.Residential;
 using OpenRealEstate.NET.FakeData;
 using OpenRealEstate.NET.Transmorgrifiers.Core;
-using OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.RealEstateComAu;
 using Shouldly;
 using Xunit;
 
@@ -311,7 +310,8 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
                 Suburb = "RICHMOND",
                 State = "vic",
                 Postcode = "3121",
-                CountryIsoCode = "AU"
+                CountryIsoCode = "AU",
+                DisplayAddress = "2/39 Main Road, RICHMOND, vic"
             };
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-Minimum.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
@@ -364,6 +364,8 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeResidentialListing();
             expectedListing.Address.StreetNumber = "2-39";
+            expectedListing.Address.DisplayAddress =
+                $"{expectedListing.Address.StreetNumber} {expectedListing.Address.Street}, {expectedListing.Address.Suburb}, {expectedListing.Address.State}";
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithAStreetNumberAndASingleSubNumber.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier
             {
@@ -385,6 +387,9 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeResidentialListing();
             expectedListing.Address.StreetNumber = "2/77a 39";
+            expectedListing.Address.DisplayAddress =
+                $"{expectedListing.Address.StreetNumber} {expectedListing.Address.Street}, {expectedListing.Address.Suburb}, {expectedListing.Address.State}";
+
             var reaXml =
                 File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithAStreetNumberAndASubNumber.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
@@ -516,6 +521,9 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeResidentialListing();
             expectedListing.Address.StreetNumber = "2/77a";
+            expectedListing.Address.DisplayAddress =
+                $"{expectedListing.Address.StreetNumber} {expectedListing.Address.Street}, {expectedListing.Address.Suburb}, {expectedListing.Address.State}";
+
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithNoStreetNumberButASubNumber.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
@@ -643,13 +651,16 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
             AssertResidentialListing(result, expectedListing);
         }
 
-        [Fact]
-        public void GivenTheFileREAResidentialAddressDisplayIsNo_Parse_ReturnsAResidentialSoldListing()
+        [Theory]
+        [InlineData("REA-Residential-Current.xml", "2/39 Main Road, RICHMOND, vic")] // Display == true/yes.
+        [InlineData("REA-Residential-Current-AddressDisplayIsNo.xml", "RICHMOND, vic")] // Display == false/no.
+        public void GivenTheFileREAResidentialWithSomeAddressDisplayValues_Parse_ReturnsAResidentialSoldListing(string fileName,
+                                                                                                      string expectedDisplayAddress)
         {
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeResidentialListing();
-            expectedListing.Address.DisplayAddress = $"{expectedListing.Address.Suburb}, {expectedListing.Address.State}";
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-AddressDisplayIsNo.xml");
+            expectedListing.Address.DisplayAddress = expectedDisplayAddress;
+            var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             // Act.

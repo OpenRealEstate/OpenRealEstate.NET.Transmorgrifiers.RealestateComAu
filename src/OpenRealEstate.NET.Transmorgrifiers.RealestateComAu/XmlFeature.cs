@@ -1,4 +1,4 @@
-﻿namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.RealEstateComAu
+﻿namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu
 {
     public class XmlFeature
     {

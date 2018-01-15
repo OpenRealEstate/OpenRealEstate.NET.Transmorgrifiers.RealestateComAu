@@ -3,7 +3,6 @@ using System.Linq;
 using OpenRealEstate.NET.Core.Filters;
 using OpenRealEstate.NET.Core.Rental;
 using OpenRealEstate.NET.Core.Residential;
-using OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.RealEstateComAu;
 using Shouldly;
 using Xunit;
 

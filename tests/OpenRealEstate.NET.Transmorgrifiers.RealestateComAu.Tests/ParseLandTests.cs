@@ -6,7 +6,6 @@ using OpenRealEstate.NET.Core;
 using OpenRealEstate.NET.Core.Land;
 using OpenRealEstate.NET.FakeData;
 using OpenRealEstate.NET.Transmorgrifiers.Core;
-using OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.RealEstateComAu;
 using Shouldly;
 using Xunit;
 using LandRuralCategoryType = OpenRealEstate.NET.Core.Land.CategoryType;
@@ -48,6 +47,10 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
         {
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
+            expectedListing.Address.StreetNumber = "LOT 12/39";
+            expectedListing.Address.DisplayAddress =
+                $"{expectedListing.Address.StreetNumber} {expectedListing.Address.Street}, {expectedListing.Address.Suburb}, {expectedListing.Address.State}";
+
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
@@ -109,6 +112,9 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
         {
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
+            expectedListing.Address.StreetNumber = "LOT 12/39";
+            expectedListing.Address.DisplayAddress =
+                $"{expectedListing.Address.StreetNumber} {expectedListing.Address.Street}, {expectedListing.Address.Suburb}, {expectedListing.Address.State}";
             expectedListing.LandDetails.CrossOver = null;
             expectedListing.LandDetails.Depths = new List<Depth>();
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Land-Current-IncompleteLandDetails.xml");
@@ -126,7 +132,11 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
         {
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
+            expectedListing.Address.StreetNumber = "LOT 12/39";
+            expectedListing.Address.DisplayAddress =
+                $"{expectedListing.Address.StreetNumber} {expectedListing.Address.Street}, {expectedListing.Address.Suburb}, {expectedListing.Address.State}";
             expectedListing.CategoryType = LandRuralCategoryType.Unknown;
+            
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Land-Current-MissingLandCategory.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
@@ -143,6 +153,9 @@ namespace OpenRealEstate.NET.Transmorgrifiers.RealestateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
             expectedListing.Address.StreetNumber = "12";
+            expectedListing.Address.DisplayAddress =
+                $"{expectedListing.Address.StreetNumber} {expectedListing.Address.Street}, {expectedListing.Address.Suburb}, {expectedListing.Address.State}";
+
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Land-Current-WithASubNumberButNoStreetNumber.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 

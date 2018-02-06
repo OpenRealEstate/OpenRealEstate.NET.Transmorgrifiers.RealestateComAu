@@ -10,7 +10,7 @@ using Shouldly;
 using Xunit;
 using LandRuralCategoryType = OpenRealEstate.Core.Land.CategoryType;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Tests
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public class ParseLandTests
     {

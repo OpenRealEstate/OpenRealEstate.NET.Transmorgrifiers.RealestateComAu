@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     internal static class Guard
     {

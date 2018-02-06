@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\OpenRealEstate.Transmorgrifiers.RealestateComAu\OpenRealEstate.Transmorgrifiers.RealestateComAu.csproj" />
+    <ProjectReference Include="..\..\src\OpenRealEstate.Transmorgrifiers.RealEstateComAu\OpenRealEstate.Transmorgrifiers.RealEstateComAu.csproj" />
   </ItemGroup>
 
   <ItemGroup>

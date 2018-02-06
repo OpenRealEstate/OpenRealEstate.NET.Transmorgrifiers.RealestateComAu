@@ -11,7 +11,7 @@
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/7205481?s=64</PackageIconUrl>
     <RepositoryUrl>https://github.com/OpenRealEstate/OpenRealEstate</RepositoryUrl>
     <RepositoryType>c#</RepositoryType>
-    <PackageTags>ore ore.net realestate openrealestate</PackageTags>
+    <PackageTags>ore ore.net realestate openrealestate rea</PackageTags>
     <Description>These are the services which encapsulate the main business logic of the OpenRealEstate library.
 
 This library is where all the magic happens :)</Description>

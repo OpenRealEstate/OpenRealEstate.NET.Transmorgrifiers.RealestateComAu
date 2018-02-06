@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     // Notes.
     /* CategoryType's

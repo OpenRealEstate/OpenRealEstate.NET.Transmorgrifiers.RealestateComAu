@@ -6,7 +6,7 @@ using OpenRealEstate.Core.Residential;
 using Shouldly;
 using Xunit;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Tests
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public class ReaXmlTransmorgrifierTests
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenRealEstate.Core;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     public static class StatusTypeHelpers
     {

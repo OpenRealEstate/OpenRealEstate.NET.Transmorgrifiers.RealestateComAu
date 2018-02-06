@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OpenRealEstate.Core;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Tests
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public static class JsonConvertHelpers
     {

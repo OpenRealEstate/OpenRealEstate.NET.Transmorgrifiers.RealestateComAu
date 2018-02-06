@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Extensions
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 {
     internal static class SystemExtensions
     {

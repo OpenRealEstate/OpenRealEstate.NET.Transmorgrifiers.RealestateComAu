@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using OpenRealEstate.Core;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Extensions
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 {
     internal static class XElementExtensions
     {

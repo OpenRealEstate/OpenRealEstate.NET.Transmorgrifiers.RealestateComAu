@@ -13,10 +13,10 @@ using OpenRealEstate.Core.Rental;
 using OpenRealEstate.Core.Residential;
 using OpenRealEstate.Core.Rural;
 using OpenRealEstate.Transmorgrifiers.Core;
-using OpenRealEstate.Transmorgrifiers.RealestateComAu.Extensions;
+using OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions;
 using CategoryTypeHelpers = OpenRealEstate.Core.Land.CategoryTypeHelpers;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     public class ReaXmlTransmorgrifier : ITransmorgrifier
     {

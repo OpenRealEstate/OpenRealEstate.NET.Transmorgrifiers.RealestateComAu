@@ -1,7 +1,7 @@
 ﻿using OpenRealEstate.Core.Rental;
 using Shouldly;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Tests
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public static class RentalListingAssertHelpers
     {

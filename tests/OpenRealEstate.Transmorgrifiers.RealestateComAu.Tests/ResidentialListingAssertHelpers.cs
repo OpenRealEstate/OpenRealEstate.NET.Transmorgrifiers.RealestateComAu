@@ -3,7 +3,7 @@ using OpenRealEstate.Core;
 using OpenRealEstate.Core.Residential;
 using Shouldly;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Tests
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public static class ResidentialListingAssertHelpers
     {

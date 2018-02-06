@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Extensions
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 {
     internal static class StringBuilderExtensions
     {

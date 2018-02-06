@@ -1,7 +1,7 @@
 ﻿using OpenRealEstate.Core;
 using Shouldly;
 
-namespace OpenRealEstate.Transmorgrifiers.RealestateComAu.Tests
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public static class UnitOfMeasureAssertHelpers
     {

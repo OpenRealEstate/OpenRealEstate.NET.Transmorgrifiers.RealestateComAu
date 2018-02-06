@@ -62,9 +62,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 
         [Theory]
         [InlineData("REA-Land-Sold.xml", "$85,000")]
+        [InlineData("REA-Land-Sold-DisplayPriceIsNo.xml", "aaaa")]
         [InlineData("REA-Land-Sold-DisplayPriceIsNo.xml", null)]
         public void GivenAnREALandSoldFile_Parse_ReturnsARemovedListing(string fileName,
-                                                                        string soldPriceText)
+                                                                        string expectedSoldPriceText)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyLandListing("Land-Sold-ABCD1234");
@@ -72,11 +73,16 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             expectedListing.Pricing = new SalePricing
             {
                 SoldPrice = 85000,
-                SoldPriceText = soldPriceText,
+                SoldPriceText = expectedSoldPriceText,
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00)
             };
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
-            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // NOTE: Lets use the expected text as the default to make sure this value will be used in the logic.
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier
+            {
+                DefaultSoldPriceTextIfMissing = expectedSoldPriceText 
+            };
 
             // Act.
             var result = reaXmlTransmorgrifier.Parse(reaXml);

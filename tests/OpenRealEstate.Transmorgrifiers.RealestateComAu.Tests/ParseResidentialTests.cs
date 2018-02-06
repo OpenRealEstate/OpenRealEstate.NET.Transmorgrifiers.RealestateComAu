@@ -531,31 +531,27 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             AssertResidentialListing(result, expectedListing);
         }
 
-        [Fact]
-        public void GivenTheFileREAResidentialCurrentWithPriceAndDisplayNoAndAPriceView_Parse_ReturnsAListing()
+        [Theory]
+        [InlineData("REA-Residential-Current-WithPriceAndDisplayNoAndAPriceView.xml", true, null)] // Set the default and then use that.
+        [InlineData("REA-Residential-Current-WithPriceAndDisplayNoAndAPriceView.xml", true, "aaaaa")] // Set the default and then use that.
+        [InlineData("REA-Residential-Current-WithPriceAndDisplayNoAndAPriceView.xml", false, null)] // Will use the default Sale price value.
+        [InlineData("REA-Residential-Current-WithPriceAndDisplayNoAndNoPriceView.xml", true, null)] // Set the default and then use that.
+        [InlineData("REA-Residential-Current-WithPriceAndDisplayNoAndNoPriceView.xml", true, "aaaaa")] // Set the default and then use that.
+        [InlineData("REA-Residential-Current-WithPriceAndDisplayNoAndNoPriceView.xml", false, null)] // Will use the default Sale price value.
+        public void GivenTheFileREAResidentialCurrentSomeVariousDisplayPriceOptions_Parse_ReturnsAListing(
+            string fileName,
+            bool isDefaultSalePriceSet,
+            string expectedSalePriceText)
         {
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeResidentialListing();
-            expectedListing.Pricing.SalePriceText = null;
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithPriceAndDisplayNoAndAPriceView.xml");
+            expectedListing.Pricing.SalePriceText = expectedSalePriceText;
+            var reaXml = File.ReadAllText($"{FakeDataFolder}{fileName}");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
-
-            // Act.
-            var result = reaXmlTransmorgrifier.Parse(reaXml);
-
-            // Assert.
-            AssertResidentialListing(result, expectedListing);
-        }
-
-        [Fact]
-        public void GivenTheFileREAResidentialCurrentWithPriceAndDisplayNoAndNoPriceView_Parse_ReturnsAListing()
-        {
-            // Arrange.
-            var expectedListing = FakeListings.CreateAFakeResidentialListing();
-            expectedListing.Pricing.SalePriceText = null;
-            var reaXml =
-                File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithPriceAndDisplayNoAndNoPriceView.xml");
-            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+            if (isDefaultSalePriceSet)
+            {
+                reaXmlTransmorgrifier.DefaultSalePriceTextIfMissing = expectedSalePriceText;
+            }
 
             // Act.
             var result = reaXmlTransmorgrifier.Parse(reaXml);
@@ -602,8 +598,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             AssertResidentialListing(result, expectedListing);
         }
 
-        [Fact]
-        public void GivenTheFileREAResidentialSoldWithDisplayPriceIsNo_Parse_ReturnsAResidentialSoldListingWithNoSoldPriceText()
+        [Theory]
+        [InlineData(true, null)] // Set the default and then use that.
+        [InlineData(true, "aaaaa")] // Set the default and then use that.
+        [InlineData(false, null)] // Will use the default Sale price value.
+        public void GivenTheFileREAResidentialSoldWithDisplayPriceIsNo_Parse_ReturnsAResidentialSoldListingWithNoSoldPriceText(
+            bool isDefaultSalePriceSet,
+            string expectedSoldPriceText)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyResidentialListing("Residential-Sold-ABCD1234");
@@ -611,11 +612,16 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             expectedListing.Pricing = new SalePricing
             {
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                SoldPrice = 580000M
+                SoldPrice = 580000M,
+                SoldPriceText = expectedSoldPriceText
             };
 
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Sold-DisplayPriceIsNo.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+            if (isDefaultSalePriceSet)
+            {
+                reaXmlTransmorgrifier.DefaultSoldPriceTextIfMissing = expectedSoldPriceText;
+            }
 
             // Act.
             var result = reaXmlTransmorgrifier.Parse(reaXml);

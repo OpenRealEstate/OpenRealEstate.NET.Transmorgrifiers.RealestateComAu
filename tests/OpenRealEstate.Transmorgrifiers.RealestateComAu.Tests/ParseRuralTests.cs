@@ -4,6 +4,7 @@ using System.Linq;
 using OpenRealEstate.Core;
 using OpenRealEstate.Core.Rural;
 using OpenRealEstate.FakeData;
+using OpenRealEstate.Testing;
 using OpenRealEstate.Transmorgrifiers.Core;
 using Shouldly;
 using Xunit;

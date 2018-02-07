@@ -8,7 +8,9 @@ using Newtonsoft.Json;
 using OpenRealEstate.Core;
 using OpenRealEstate.Core.Residential;
 using OpenRealEstate.FakeData;
+using OpenRealEstate.Testing;
 using OpenRealEstate.Transmorgrifiers.Core;
+using OpenRealEstate.Transmorgrifiers.Json;
 using Shouldly;
 using Xunit;
 
@@ -159,10 +161,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Parse the xml, once for the first time.
             var tempResult = reaXmlTransmorgrifier.Parse(reaXml);
             var source = tempResult.Listings.First().Listing;
-            var json = JsonConvertHelpers.SerializeObject(source);
+            var json = source.SerializeObject();
 
             // Act.
-            var result = JsonConvert.DeserializeObject<ResidentialListing>(json);
+            var result = JsonConvertHelpers.DeserializeObject(json);
 
             // Assert.
             var listingResult = new ListingResult

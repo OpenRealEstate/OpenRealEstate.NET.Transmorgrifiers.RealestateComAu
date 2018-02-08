@@ -49,7 +49,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
             expectedListing.Address.StreetNumber = "LOT 12/39";
-            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true, false); 
+            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true); 
 
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
@@ -119,7 +119,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
             expectedListing.Address.StreetNumber = "LOT 12/39";
-            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true, false);
+            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true);
             expectedListing.LandDetails.CrossOver = null;
             expectedListing.LandDetails.Depths = new List<Depth>();
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Land-Current-IncompleteLandDetails.xml");
@@ -138,7 +138,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
             expectedListing.Address.StreetNumber = "LOT 12/39";
-            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true, false);
+            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true);
             expectedListing.CategoryType = LandRuralCategoryType.Unknown;
             
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Land-Current-MissingLandCategory.xml");
@@ -157,7 +157,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeLandListing();
             expectedListing.Address.StreetNumber = "12";
-            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true, false);
+            expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true);
 
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Land-Current-WithASubNumberButNoStreetNumber.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();

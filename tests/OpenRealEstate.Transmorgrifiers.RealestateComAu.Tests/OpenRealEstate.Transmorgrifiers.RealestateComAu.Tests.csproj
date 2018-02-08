@@ -16,8 +16,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="OpenRealEstate.FakeData" Version="5.0.0-dev" />
-    <PackageReference Include="OpenRealEstate.Testing" Version="1.0.0-dev" />
+    <PackageReference Include="OpenRealEstate.FakeData" Version="6.0.0-dev" />
+    <PackageReference Include="OpenRealEstate.Testing" Version="2.0.0-dev" />
     <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="1.0.0-dev" />
     <PackageReference Include="Shouldly" Version="3.0.0" />
     <PackageReference Include="xunit.core" Version="2.3.1" />

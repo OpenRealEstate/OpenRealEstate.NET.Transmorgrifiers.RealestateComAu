@@ -38,6 +38,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             result.Listings.Count.ShouldBe(1);
             result.Errors.Count.ShouldBe(0);
             result.UnhandledData.Count.ShouldBe(0);
+            result.TransmorgrifierName.ShouldBe("REA");
             ResidentialListingAssertHelpers.AssertResidentialListing(result.Listings.First().Listing as ResidentialListing,
                                                                      expectedListing);
         }
@@ -179,7 +180,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                     listingResult
                 },
                 UnhandledData = new List<string>(),
-                Errors = new List<ParsedError>()
+                Errors = new List<ParsedError>(),
+                TransmorgrifierName = "REA"
             };
             AssertResidentialListing(parsedResult, expectedListing);
         }

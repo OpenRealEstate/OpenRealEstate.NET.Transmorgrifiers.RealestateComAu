@@ -86,7 +86,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 // We have an error, so we need to quit now.
                 return new ParsedResult
                 {
-                    Errors = cleanedResult.Item2
+                    Errors = cleanedResult.Item2,
+                    TransmorgrifierName = Name
                 };
             }
 
@@ -102,7 +103,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             {
                 var error = new ParsedError(exception.Message,
                                             "Failed to parse the provided xml data because it contains some invalid data. Pro Tip: This is usually because a character is not encoded. Like an ampersand.");
-                return new ParsedResult(error);
+                return new ParsedResult(error)
+                {
+                    TransmorgrifierName = Name
+                };
             }
 
             // Do I have _anything_ ?
@@ -131,7 +135,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                         return new ParsedResult(
                             new ParsedError(
                                 $"You can only parse a single REA Xml element when you wish to update existing Listing instance. Currently, the REA Xml data contains {elements.KnownElements.Count} element(s). How to fix: please only provide one REA Xml to parse when updating an existing Listing instance.",
-                                null));
+                                null))
+                        {
+                            TransmorgrifierName = Name
+                        };
                     }
 
                     // 1x REA Xml element.
@@ -163,7 +170,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             {
                 Listings = successfullyParsedListings.ToList(),
                 UnhandledData = elements.UnknownElements.Select(x => x.ToString()).ToList(),
-                Errors = invalidData.ToList()
+                Errors = invalidData.ToList(),
+                TransmorgrifierName = Name
             };
         }
 

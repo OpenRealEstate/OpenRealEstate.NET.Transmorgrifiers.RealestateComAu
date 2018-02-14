@@ -71,6 +71,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
         public string DefaultSoldPriceTextIfMissing { get; set; }
 
         /// <inheritdoc />
+        public string Name => "REA";
+
+        /// <inheritdoc />
         public ParsedResult Parse(string data,
                                   Listing existingListing = null,
                                   bool areBadCharactersRemoved = false)
@@ -652,7 +655,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
             listing.Address.Street = addressElement.ValueOrDefault("street");
             listing.Address.Suburb = addressElement.ValueOrDefault("suburb");
-            listing.Address.State = addressElement.ValueOrDefault("state");
+
+            // We want to make sure the final 'State' value is the long-form state, not an abbreviation.
+            var state = addressElement.ValueOrDefault("state");
+            if (!string.IsNullOrWhiteSpace(state))
+            {
+                listing.Address.State = Address.ToLongStateString(state);
+            }
 
             // REA Xml Rule: Country is ommited == default to Australia.
             // Reference: http://reaxml.realestate.com.au/docs/reaxml1-xml-format.html#country
@@ -1108,6 +1117,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 return;
             }
 
+            // NOTE: Known flaw (Thanks REA! :/) If we have an <images> or <objects> _parent_ element,
+            //       but no <img> elements undernearth this, then we (unfortunately) just ignore this.
+            //       Personally, I would prefer to set the Images collection to be empty ... in effect
+            //       saying: I have given you an <images> collection .. but inside is nothing ... which
+            //               means clear _all_ of em out!
+            //       But I don't believe the REA Xml rules like-or-want that.
             var imagesElements = imageElement.Elements("img").ToArray();
             if (!imagesElements.Any())
             {

@@ -310,7 +310,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                 StreetNumber = "2/39",
                 Street = "Main Road",
                 Suburb = "RICHMOND",
-                State = "Vic",
+                State = "Victoria",
                 Postcode = "3121",
                 CountryIsoCode = "AU"
             };

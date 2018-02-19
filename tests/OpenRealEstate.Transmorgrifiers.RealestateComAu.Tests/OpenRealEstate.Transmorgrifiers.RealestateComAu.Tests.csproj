@@ -19,6 +19,7 @@
     <PackageReference Include="OpenRealEstate.FakeData" Version="8.0.0-dev" />
     <PackageReference Include="OpenRealEstate.Testing" Version="4.0.0-dev" />
     <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="8.0.0-dev" />
+    <PackageReference Include="OpenRealEstate.Validation" Version="4.0.0-dev" />
     <PackageReference Include="Shouldly" Version="3.0.0" />
     <PackageReference Include="xunit.core" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />

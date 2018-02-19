@@ -1,12 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using FluentValidation;
 using OpenRealEstate.Core;
 using OpenRealEstate.Core.Rental;
 using OpenRealEstate.FakeData;
 using OpenRealEstate.Testing;
 using OpenRealEstate.Transmorgrifiers.Core;
+using OpenRealEstate.Validation.Rental;
 using Shouldly;
+using System;
+using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
@@ -60,9 +62,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [InlineData("REA-Rental-Withdrawn.xml", "Rental-Withdrawn-ABCD1234")]
         [InlineData("REA-Rental-OffMarket.xml", "Rental-OffMarket-ABCD1234")]
         [InlineData("REA-Rental-Deleted.xml", "Rental-Deleted-ABCD1234")]
-        public void GivenAnReaRentalFileThatRepresentsARemovedListing_Parse_ReturnsARemovedListing(
-            string fileName,
-            string id)
+        public void GivenAnReaRentalFileThatRepresentsARemovedListing_Parse_ReturnsARemovedListing(string fileName,
+                                                                                                   string id)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyRentalListing(id);
@@ -75,6 +76,60 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 
             // Assert.
             AssertRentalListing(result, expectedListing);
+        }
+
+        [Theory]
+        [InlineData("REA-Rental-Leased.xml", StatusType.Leased)]
+        [InlineData("REA-Rental-Withdrawn.xml", StatusType.Removed)]
+        [InlineData("REA-Rental-OffMarket.xml", StatusType.Removed)]
+        [InlineData("REA-Rental-Deleted.xml", StatusType.Removed)]
+        public void GivenANonCurrentReaRentalFileAndAnExistingListing_Parse_ReturnsTheUpdatedListing(string fileName,
+                                                                                                     StatusType expectedStatusType)
+        {
+            // Arrange.
+            var existingListing = FakeListings.CreateAFakeRentalListing();
+            var reaXml = File.ReadAllText(FakeDataFolder + fileName);
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Arrange.
+            var result = reaXmlTransmorgrifier.Parse(reaXml, existingListing);
+
+            // Assert.
+            var listing = result.Listings.First().Listing as RentalListing;
+            listing.StatusType.ShouldBe(expectedStatusType);
+
+            var validator = new RentalListingValidator();
+            var validationResult = validator.Validate(listing, ruleSet: RentalListingValidator.StrictRuleSet);
+            validationResult.IsValid.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenACurrentReaRentalFileAndAnExistingListing_Parse_ReturnsTheUpdatedListing()
+        {
+            // Arrange.
+            var existingListing = FakeListings.CreateAFakeRentalListing();
+            existingListing.Pricing.RentalPrice = 444;
+            existingListing.Pricing.RentalPriceText = Guid.NewGuid().ToString();
+            existingListing.Title = Guid.NewGuid().ToString();
+            existingListing.Description = Guid.NewGuid().ToString();
+            
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rental-Current.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+            var newListing = reaXmlTransmorgrifier.Parse(reaXml)
+                                                  .Listings
+                                                  .First()
+                                                  .Listing as RentalListing;
+
+            // Arrange.
+            var result = reaXmlTransmorgrifier.Parse(reaXml, existingListing);
+
+            // Assert.
+            var listing = result.Listings.First().Listing as RentalListing;
+            listing.StatusType.ShouldBe(existingListing.StatusType);
+            listing.Pricing.RentalPrice.ShouldBe(newListing.Pricing.RentalPrice);
+            listing.Pricing.RentalPriceText.ShouldBe(newListing.Pricing.RentalPriceText);
+            listing.Title.ShouldBe(newListing.Title);
+            listing.Description.ShouldBe(newListing.Description);
         }
 
         [Fact]

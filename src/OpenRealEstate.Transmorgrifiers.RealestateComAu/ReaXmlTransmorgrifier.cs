@@ -1783,18 +1783,19 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             }
 
             ExtractResidentialAndRentalPropertyType(document, rentalListing);
-            rentalListing.Pricing = ExtractRentalPricing(document, cultureInfo);
+            ExtractRentalPricing(document, rentalListing, cultureInfo);
             ExtractFeatures(document, rentalListing);
             ExtractBuildingDetails(document, rentalListing);
             ExtractRentalNewConstruction(document, rentalListing);
         }
 
         // REF: http://reaxml.realestate.com.au/docs/reaxml1-xml-format.html#rent
-        private static RentalPricing ExtractRentalPricing(XElement xElement,
-                                                          CultureInfo cultureInfo)
+        private static void ExtractRentalPricing(XElement xElement,
+                                                 RentalListing listing,
+                                                 CultureInfo cultureInfo)
         {
             Guard.AgainstNull(xElement);
-
+            Guard.AgainstNull(listing);
 
             // Quote: There can be multiple rent elements if you wish to specify a price for both monthly and weekly. 
             //        However, at least one of the rent elements must be for a weekly period.
@@ -1802,7 +1803,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             var rentElements = xElement.Elements("rent").ToArray();
             if (!rentElements.Any())
             {
-                return null;
+                // No rent element - move along!
+                return;
             }
 
             // We will only use the WEEKLY one.
@@ -1851,7 +1853,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
             rentalPricing.Bond = xElement.NullableMoneyValueOrDefault(cultureInfo, "bond");
 
-            return rentalPricing;
+            // Finally, lets use this rental pricing.
+            listing.Pricing = rentalPricing;
+
+            return;
         }
 
         private static void ExtractRentalNewConstruction(XElement document,

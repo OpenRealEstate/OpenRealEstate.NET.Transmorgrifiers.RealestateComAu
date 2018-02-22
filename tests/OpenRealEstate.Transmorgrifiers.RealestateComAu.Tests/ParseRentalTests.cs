@@ -59,15 +59,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Rental-Withdrawn.xml", "Rental-Withdrawn-ABCD1234")]
-        [InlineData("REA-Rental-OffMarket.xml", "Rental-OffMarket-ABCD1234")]
-        [InlineData("REA-Rental-Deleted.xml", "Rental-Deleted-ABCD1234")]
+        [InlineData("REA-Rental-Withdrawn.xml", "withdrawn", "Rental-Withdrawn-ABCD1234")]
+        [InlineData("REA-Rental-OffMarket.xml", "offmarket", "Rental-OffMarket-ABCD1234")]
+        [InlineData("REA-Rental-Deleted.xml", "deleted", "Rental-Deleted-ABCD1234")]
         public void GivenAnReaRentalFileThatRepresentsARemovedListing_Parse_ReturnsARemovedListing(string fileName,
+                                                                                                   string sourceStatus,
                                                                                                    string id)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyRentalListing(id);
             expectedListing.StatusType = StatusType.Removed;
+            expectedListing.SourceStatus = sourceStatus;
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
@@ -154,6 +156,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = CreateAFakeEmptyRentalListing("Rental-Leased-ABCD1234");
             expectedListing.StatusType = StatusType.Leased;
+            expectedListing.SourceStatus = "Leased";
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rental-Leased.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 

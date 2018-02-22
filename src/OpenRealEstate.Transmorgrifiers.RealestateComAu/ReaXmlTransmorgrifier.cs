@@ -554,13 +554,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
             listing.AgencyId = document.ValueOrDefault("agentID");
             listing.Id = document.ValueOrDefault("uniqueID");
-            var status = document.AttributeValueOrDefault("status");
-            if (!string.IsNullOrWhiteSpace(status))
+            listing.SourceStatus = document.AttributeValueOrDefault("status");
+            if (!string.IsNullOrWhiteSpace(listing.SourceStatus))
             {
-                var statusType = StatusTypeHelpers.ToStatusType(status);
+                var statusType = StatusTypeHelpers.ToStatusType(listing.SourceStatus);
                 if (statusType == StatusType.Unknown)
                 {
-                    throw new Exception($"An invalid StatusType '{status}' was provided.");
+                    throw new Exception($"An invalid StatusType '{listing.SourceStatus}' was provided.");
                 }
 
                 listing.StatusType = statusType;

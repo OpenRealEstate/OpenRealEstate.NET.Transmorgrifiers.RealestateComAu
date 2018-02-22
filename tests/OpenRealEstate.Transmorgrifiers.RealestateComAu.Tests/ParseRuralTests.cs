@@ -57,16 +57,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Rural-Withdrawn.xml", "Rural-Withdrawn-ABCD1234")]
-        [InlineData("REA-Rural-OffMarket.xml", "Rural-OffMarket-ABCD1234")]
-        [InlineData("REA-Rural-Deleted.xml", "Rural-Deleted-ABCD1234")]
-        public void GivenAnReaRuralFileThatRepresentsARemovedListing_Parse_ReturnsARemovedListing(
-            string fileName,
-            string id)
+        [InlineData("REA-Rural-Withdrawn.xml", "withdrawn", "Rural-Withdrawn-ABCD1234")]
+        [InlineData("REA-Rural-OffMarket.xml", "offmarket", "Rural-OffMarket-ABCD1234")]
+        [InlineData("REA-Rural-Deleted.xml", "deleted", "Rural-Deleted-ABCD1234")]
+        public void GivenAnReaRuralFileThatRepresentsARemovedListing_Parse_ReturnsARemovedListing(string fileName,
+                                                                                                  string sourceStatus,
+                                                                                                  string id)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyRuralListing(id);
             expectedListing.StatusType = StatusType.Removed;
+            expectedListing.SourceStatus = sourceStatus;
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
@@ -83,6 +84,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = CreateAFakeEmptyRuralListing("Rural-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
+            expectedListing.SourceStatus = "sold";
             expectedListing.Pricing = new SalePricing
             {
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
@@ -104,6 +106,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = CreateAFakeEmptyRuralListing("Rural-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
+            expectedListing.SourceStatus = "sold";
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rural-Sold.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 

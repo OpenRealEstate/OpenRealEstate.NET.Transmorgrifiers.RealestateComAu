@@ -71,6 +71,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = CreateAFakeEmptyLandListing("Land-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
+            expectedListing.SourceStatus = "Sold";
             expectedListing.Pricing = new SalePricing
             {
                 SoldPrice = 85000,
@@ -93,16 +94,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Land-Withdrawn.xml", "Land-Withdrawn-ABCD1234")]
-        [InlineData("REA-Land-OffMarket.xml", "Land-OffMarket-ABCD1234")]
-        [InlineData("REA-Land-Deleted.xml", "Land-Deleted-ABCD1234")]
-        public void GivenAnReaLandFileThatRepresentsARemovedListing_Parse_ReturnsARemovedListing(
-            string fileName,
-            string id)
+        [InlineData("REA-Land-Withdrawn.xml", "withdrawn", "Land-Withdrawn-ABCD1234")]
+        [InlineData("REA-Land-OffMarket.xml", "offmarket", "Land-OffMarket-ABCD1234")]
+        [InlineData("REA-Land-Deleted.xml", "deleted", "Land-Deleted-ABCD1234")]
+        public void GivenAnReaLandFileThatRepresentsARemovedListing_Parse_ReturnsARemovedListing(string fileName,
+                                                                                                 string sourceStatus,
+                                                                                                 string id)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyLandListing(id);
             expectedListing.StatusType = StatusType.Removed;
+            expectedListing.SourceStatus = sourceStatus;
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 

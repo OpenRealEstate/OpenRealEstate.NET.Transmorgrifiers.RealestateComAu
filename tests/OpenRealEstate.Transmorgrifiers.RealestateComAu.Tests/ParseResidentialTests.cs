@@ -78,15 +78,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Residential-Withdrawn.xml", "Residential-Withdrawn-ABCD1234")]
-        [InlineData("REA-Residential-OffMarket.xml", "Residential-OffMarket-ABCD1234")]
-        [InlineData("REA-Residential-Deleted.xml", "Residential-Deleted-ABCD1234")]
+        [InlineData("REA-Residential-Withdrawn.xml", "withdrawn", "Residential-Withdrawn-ABCD1234")]
+        [InlineData("REA-Residential-OffMarket.xml", "offmarket", "Residential-OffMarket-ABCD1234")]
+        [InlineData("REA-Residential-Deleted.xml", "deleted", "Residential-Deleted-ABCD1234")]
         public void GivenAnReaFileThatRepresentsARemovedListing_Parse_ReturnsAResidentialRemovedListing(string fileName,
+                                                                                                        string sourceStatus,
                                                                                                         string id)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyResidentialListing(id);
             expectedListing.StatusType = StatusType.Removed;
+            expectedListing.SourceStatus = sourceStatus;
 
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
@@ -129,10 +131,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [InlineData("REA-Residential-Current-WithFloorPlansMissing.xml", true, StatusType.Available)]
         [InlineData("REA-Residential-Sold.xml", false, StatusType.Sold)]
         public void
-            GivenTheFileREAResidentialCurrent_ParseThenSerializeThenDeserialize_ReturnsAResidentialAvailableListing(
-                string fileName,
-                bool isFloorPlansCleared,
-                StatusType statusType)
+            GivenTheFileREAResidentialCurrent_ParseThenSerializeThenDeserialize_ReturnsAResidentialAvailableListing(string fileName,
+                                                                                                                    bool isFloorPlansCleared,
+                                                                                                                    StatusType statusType)
         {
             // Arrange.
             ResidentialListing expectedListing;
@@ -144,6 +145,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             {
                 expectedListing = CreateAFakeEmptyResidentialListing("Residential-Sold-ABCD1234");
                 expectedListing.StatusType = StatusType.Sold;
+                expectedListing.SourceStatus = "sold";
                 expectedListing.Pricing = new SalePricing
                 {
                     SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
@@ -307,6 +309,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = CreateAFakeEmptyResidentialListing("Residential-Current-ABCD1234");
             expectedListing.StatusType = StatusType.Available;
+            expectedListing.SourceStatus = "current";
             expectedListing.Address = new Address
             {
                 StreetNumber = "2/39",
@@ -586,6 +589,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = CreateAFakeEmptyResidentialListing("Residential-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
+            expectedListing.SourceStatus = "sold";
             expectedListing.Pricing = new SalePricing
             {
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
@@ -606,13 +610,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [InlineData(true, null)] // Set the default and then use that.
         [InlineData(true, "aaaaa")] // Set the default and then use that.
         [InlineData(false, null)] // Will use the default Sale price value.
-        public void GivenTheFileREAResidentialSoldWithDisplayPriceIsNo_Parse_ReturnsAResidentialSoldListingWithNoSoldPriceText(
-            bool isDefaultSalePriceSet,
-            string expectedSoldPriceText)
+        public void GivenTheFileREAResidentialSoldWithDisplayPriceIsNo_Parse_ReturnsAResidentialSoldListingWithNoSoldPriceText(bool isDefaultSalePriceSet,
+                                                                                                                               string expectedSoldPriceText)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyResidentialListing("Residential-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
+            expectedListing.SourceStatus = "Sold";
             expectedListing.Pricing = new SalePricing
             {
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
@@ -641,6 +645,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Arrange.
             var expectedListing = CreateAFakeEmptyResidentialListing("Residential-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
+            expectedListing.SourceStatus = "sold";
             expectedListing.Pricing = new SalePricing
             {
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),

@@ -103,7 +103,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [Theory]
         [InlineData("REA-Residential-Current-WithBadInspectionTime.xml",
             "Inspection element has an invald Date/Time value. Element: <inspection> 12:00AM to 12:00AM</inspection>")]
-        [InlineData("REA-Residential-Current-BadSalePrice.xml", "Failed to parse the value '550000600000550000600000550000600000' into a decimal.")]
+        [InlineData("REA-Residential-Current-BadSalePrice.xml", "Failed to parse element: residential.price; value: '550000600000550000600000550000600000' into a decimal/money.")]
         [InlineData("REA-Residential-Sold-DisplayAttributeIsRange.xml",
             "Value 'range' is out of range. It should only be 0/1/yes/no.\r\nParameter name: value")]
         [InlineData("REA-Residential-Current-WithABadBedroomNumber.xml",

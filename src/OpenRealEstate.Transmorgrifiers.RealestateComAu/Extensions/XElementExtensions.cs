@@ -75,7 +75,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 }
             }
 
-
             if (element == null)
             {
                 return null;
@@ -164,9 +163,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 return value;
             }
 
-            var errorMessage = string.Format("Expected the attribute '{0}' but failed to find it in the element '{1}'.",
-                                             attributeName,
-                                             xElement.Name);
+            var errorMessage = $"Expected the attribute '{attributeName}' but failed to find it in the element '{xElement.Name}'.";
             throw new Exception(errorMessage);
         }
 
@@ -180,7 +177,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 
             if (string.IsNullOrWhiteSpace(attributeName))
             {
-                throw new ArgumentNullException("attributeName");
+                throw new ArgumentNullException(nameof(attributeName));
             }
 
             var attribute = xElement.Attribute(attributeName);
@@ -212,6 +209,14 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                        : attribute.Value.ParseOneYesZeroNoToBool();
         }
 
+        private static string ParsingErrorMessage(string value,
+                                                  string parseName,
+                                                  XElement xElement,
+                                                  string elementName = null)
+        {
+            return $"Failed to parse element: {xElement.Name}{(string.IsNullOrEmpty(elementName) ? string.Empty : "." + elementName)}; value: '{value}' into a {parseName}.";
+        }
+
         internal static int IntValueOrDefault(this XElement xElement,
                                               string elementName = null)
         {
@@ -226,7 +231,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 return number;
             }
 
-            var errorMessage = string.Format("Failed to parse the value '{0}' into an int.", value);
+            var errorMessage = ParsingErrorMessage(value, "int", xElement, elementName);
             throw new Exception(errorMessage);
         }
 
@@ -245,7 +250,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 return number;
             }
 
-            var errorMessage = string.Format("Failed to parse the value '{0}' into a decimal.", value);
+            var errorMessage = ParsingErrorMessage(value, "decimal", xElement, elementName);
             throw new Exception(errorMessage);
         }
 
@@ -269,7 +274,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 return number;
             }
 
-            var errorMessage = string.Format("Failed to parse the value '{0}' into a decimal.", value);
+            var errorMessage = ParsingErrorMessage(value, "money", xElement, elementName);
             throw new Exception(errorMessage);
         }
 
@@ -297,7 +302,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             }
 
             // Damn it! Failed to parse the value as a decimal/money :(
-            var errorMessage = $"Failed to parse the value '{value}' into a decimal.";
+            var errorMessage = ParsingErrorMessage(value, "decimal/money", xElement, elementName);
             throw new Exception(errorMessage);
         }
 

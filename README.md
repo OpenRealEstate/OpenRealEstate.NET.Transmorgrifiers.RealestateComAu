@@ -4,7 +4,7 @@
 
 This is a transmogrifier (i.e. converter) that converts an REA-XML file to an OpenRealEstate model.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/rlf7cfhgl73vx0t3/branch/master?svg=true)](https://ci.appveyor.com/project/PureKrome/openrealestate-net-transmorgrifiers-realestatecoma) [![NuGet](https://img.shields.io/nuget/v/OpenRealEstate.Transmorgrifiers.RealestateComAu.svg)](https://www.nuget.org/packages/OpenRealEstate.Transmorgrifiers.RealestateComAu) [![NuGet](https://img.shields.io/nuget/dt/OpenRealEstate.Transmorgrifiers.RealestateComAu.svg)](https://www.nuget.org/packages/OpenRealEstate.Transmorgrifiers.RealestateComAu) [![MyGet Pre Release](https://img.shields.io/myget/openrealestate-net/vpre/OpenRealEstate.Transmorgrifiers.RealestateComAu.svg)]()
+[![Build status](https://ci.appveyor.com/api/projects/status/rlf7cfhgl73vx0t3/branch/master?svg=true)](https://ci.appveyor.com/project/PureKrome/openrealestate-net-transmorgrifiers-realestatecoma) [![NuGet](https://img.shields.io/nuget/v/OpenRealEstate.Transmorgrifiers.RealestateComAu.svg)](https://www.nuget.org/packages/OpenRealEstate.Transmorgrifiers.RealestateComAu) [![NuGet](https://img.shields.io/nuget/dt/OpenRealEstate.Transmorgrifiers.RealestateComAu.svg)](https://www.nuget.org/packages/OpenRealEstate.Transmorgrifiers.RealestateComAu) [![MyGet Pre Release](https://img.shields.io/myget/openrealestate-net/vpre/OpenRealEstate.Transmorgrifiers.RealestateComAu.svg)]() [![codecov](https://codecov.io/gh/OpenRealEstate/OpenRealEstate.NET.Transmorgrifiers.RealestateComAu/branch/master/graph/badge.svg)](https://codecov.io/gh/OpenRealEstate/OpenRealEstate.NET.Transmorgrifiers.RealestateComAu)
 
 ---
 

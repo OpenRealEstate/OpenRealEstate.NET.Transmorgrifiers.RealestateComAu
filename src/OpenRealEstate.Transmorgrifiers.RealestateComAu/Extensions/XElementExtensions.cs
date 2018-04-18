@@ -107,33 +107,34 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             }
 
             XElement element;
-            if (string.IsNullOrWhiteSpace(elementName))
+            if (!string.IsNullOrWhiteSpace(attributeName))
             {
-                element = xElement;
-            }
-            else if (string.IsNullOrWhiteSpace(attributeName) &&
-                     string.IsNullOrWhiteSpace(attributeValue))
-            {
-                element = xElement.Element(elementName);
-            }
-            else
-            {
-                if (string.IsNullOrWhiteSpace(attributeValue))
+                // Are we getting the element by name AND value?
+                // This is where things get tricky. We need to get the element that contains an attribute name AND attribute value.
+                // For example, an Agent section has 2x <telephone /> elements, but are different by the attributes.
+                // <telephone type="mobile" /> vs <telephone type="BH" />
+                if (!string.IsNullOrWhiteSpace(attributeValue))
+                {
+                    element = xElement
+                        .Descendants(elementName)
+                        .FirstOrDefault(x => (string)x.Attribute(attributeName) == attributeValue);
+                }
+                else
                 {
                     // We are trying to find the value of this attribute - so lets get the first element with this attribute.
                     element = xElement
                         .Descendants(elementName)
                         .FirstOrDefault(x => x.Attribute(attributeName) != null);
+
                 }
-                else
-                {
-                    // This is where things get tricky. We need to get the element that contains an attribute name AND attribute value.
-                    // For example, an Agent section has 2x <telephone /> elements, but are different by the attributes.
-                    // <telephone type="mobile" /> vs <telephone type="BH" />
-                    element = xElement
-                        .Descendants(elementName)
-                        .FirstOrDefault(x => (string) x.Attribute(attributeName) == attributeValue);
-                }
+            }
+            else if (!string.IsNullOrWhiteSpace(elementName))
+            {
+                element = xElement.Element(elementName);
+            }
+            else
+            {
+                element = xElement;
             }
 
             // There is no element found, so don't do anything.
@@ -143,8 +144,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             }
 
             // This is the next tricky part. Are we after the element value or the attribute value?
-            var value = !string.IsNullOrWhiteSpace(attributeName) &&
-                        string.IsNullOrWhiteSpace(attributeValue)
+            var value = !string.IsNullOrWhiteSpace(attributeName)
                             ? AttributeValueOrDefault(element, attributeName)
                             : element.Value.Trim();
 

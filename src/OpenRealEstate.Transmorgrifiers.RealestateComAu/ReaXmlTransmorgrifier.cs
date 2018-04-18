@@ -1498,8 +1498,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             {
                 // NOTE: The REA documentation is vague as to the 100% specification on this.
                 // So i'm going to assume the following (in order)
-                // 1. <auction>date-time-in-here</auction>
-                // 2. <auction date="date-time-in-here"></auction>
+                // 1. <auction date="date-time-in-here"></auction>  or  <auction date="date-time-in-here" />
+                // 2. <auction>date-time-in-here</auction>
+                // If the element has a 'date' attribute AND a value, then ignore the value.
+                //    e.g. <auction date="date-time-in-here">some text here</auction>
                 // ** YET ANOTHER FRICKING EXAMPLE OF WHY THIS SCHEMA AND XML ARE F'ING CRAP **
                 if (string.IsNullOrWhiteSpace(auction))
                 {
@@ -1507,11 +1509,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 }
 
                 listing.AuctionOn = !string.IsNullOrWhiteSpace(auction)
-                                        ? (DateTime?) ToDateTime(auction, "<auction/> or <auction date=''/>")
+                                        ? (DateTime?) ToDateTime(auction, "<auction date=''/> or <auction/>")
                                         : null;
             });
 
-            document.ValueOrDefaultIfExists(action, "auction");
+            // First, try and parse the attribute only.
+            document.ValueOrDefaultIfExists(action, "auction", "date");
+            if (!listing.AuctionOn.HasValue)
+            {
+                // No value in the attribute, so lets see if the element value has the value.
+                document.ValueOrDefaultIfExists(action, "auction");
+            }
         }
 
         private static void ExtractBuildingDetails(XContainer document,

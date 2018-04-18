@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Newtonsoft.Json;
 using OpenRealEstate.Core;
 using OpenRealEstate.Core.Residential;
 using OpenRealEstate.FakeData;
@@ -63,6 +62,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [InlineData("REA-Residential-Current-WithAllFeatures.xml")]
         [InlineData("REA-Residential-Current-WithAStreetNumberAndASingleSubNumber.xml")]
         [InlineData("REA-Residential-Current-WithA4PointZeroZeroBedroomNumber.xml")]
+        [InlineData("REA-Residential-Current-WithOptionalAuctionDateTimeText.xml")]
         public void GivenTheFileREAResidentialCurrent_Parse_ReturnsAResidentialAvailableListing(string fileName)
         {
             // Arrange.
@@ -76,7 +76,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Assert.
             AssertResidentialListing(result, expectedListing);
         }
-
+        
         [Theory]
         [InlineData("REA-Residential-Withdrawn.xml", "withdrawn", "Residential-Withdrawn-ABCD1234")]
         [InlineData("REA-Residential-OffMarket.xml", "offmarket", "Residential-OffMarket-ABCD1234")]

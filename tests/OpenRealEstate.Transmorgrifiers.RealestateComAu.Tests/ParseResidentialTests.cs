@@ -681,5 +681,26 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Assert.
             AssertResidentialListing(result, expectedListing);
         }
+        
+        [Fact]
+        public void GivenTheFileREAResidentialCurrentWithMoreThan26Images_Parse_ReturnsAResidentialAvailableListing()
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-ManyImages.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            var listing = result.Listings.First().Listing;
+            listing.Images.Count.ShouldBe(31);
+            listing.Images.First().Id.ShouldBe("m");
+            listing.Images.First().Url.EndsWith("m.jpg");
+            listing.Images[1].Id.ShouldBe("a");
+            listing.Images[1].Url.EndsWith("a.jpg");
+            listing.Images.Last().Id.ShouldBe("ae");
+            listing.Images.Last().Url.EndsWith("ae.jpg");
+        }
     }
 }

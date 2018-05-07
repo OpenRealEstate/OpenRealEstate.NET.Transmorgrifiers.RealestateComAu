@@ -97,6 +97,9 @@
     <None Update="Sample Data\Rental\REA-Segment-Rental-Current.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Sample Data\Residential\REA-Residential-Current-ManyImages.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Sample Data\Residential\REA-Residential-Current-AddressDisplayIsNo.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

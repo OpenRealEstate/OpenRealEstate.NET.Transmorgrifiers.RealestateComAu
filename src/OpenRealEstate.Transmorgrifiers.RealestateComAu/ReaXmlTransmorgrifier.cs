@@ -1171,6 +1171,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                                                    Func<string, int> orderConverstionFunction,
                                                                    string elementName = null)
         {
+            int counter = 1;
             // Note 1: Image 'urls' can either be via a Uri (yay!) or
             //         a file name because the xml was provided in a zip file with
             //         the images (booooo! hiss!!!)
@@ -1179,12 +1180,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                     let url = x.AttributeValueOrDefault("url")
                     let file = x.AttributeValueOrDefault("file")
                     let id = x.AttributeValueOrDefault("id")
-                    let order = id // Yep, the Id is not a number in this case, but the order. Lame REA rules.
+                    let reaOrder = orderConverstionFunction(id)
                     let createdOn = x.AttributeValueOrDefault("modTime")
                     let contentType = x.AttributeValueOrDefault("format")
                     where (!string.IsNullOrWhiteSpace(url) ||
                            !string.IsNullOrWhiteSpace(file)) &&
-                          !string.IsNullOrWhiteSpace(order)
+                          !string.IsNullOrWhiteSpace(id)
+                    orderby reaOrder
                     select new Media
                     {
                         Id = id,
@@ -1196,7 +1198,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                         ? null
                                         : file
                                   : url,
-                        Order = orderConverstionFunction(order),
+                        Order = counter++,
                         ContentType = contentType
                     }).ToList();
         }
@@ -1681,13 +1683,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
         private static int ConvertImageOrderToNumber(string imageOrder)
         {
-            var character = imageOrder.ToUpperInvariant().First();
-
-            // 65 == 'A'. But we need 'm' to be 1, so we have to do some funky shit.
-            // A == 65 - 63 == 2
-            // B == 66 - 63 == 3
-
-            return character == 'M' ? 1 : character - 63;
+            return imageOrder.Sum(c => c.ToString().Equals("M", StringComparison.OrdinalIgnoreCase) 
+                ? -1
+                : c);
         }
 
         private static string AppendElementOrAttributeToErrorMessage(string errorMessage,

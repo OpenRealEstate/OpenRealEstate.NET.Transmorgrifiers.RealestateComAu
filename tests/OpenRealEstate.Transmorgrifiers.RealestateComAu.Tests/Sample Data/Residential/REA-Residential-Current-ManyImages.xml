@@ -88,42 +88,42 @@
         <externalLink href="http%3A%2F%2Fwww%2Eau%2Eopen2view%2Ecom%2Fproperties%2F314244%2Ftour%23floorplan" />
         <externalLink href="http://www.google.com/hello" />
         <images>
-            <img id="m" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageM.jpg" format="jpg" />
-            <img id="a" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageA.jpg" format="jpg" />
-            <img id="b" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageB.jpg" format="jpg" />
-            <img id="c" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageC.jpg" format="jpg" />
-            <img id="d" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageD.jpg" format="jpg" />
-            <img id="e" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageE.jpg" format="jpg" />
-            <img id="f" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageF.jpg" format="jpg" />
-            <img id="g" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageG.jpg" format="jpg" />
-            <img id="h" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageH.jpg" format="jpg" />
-            <img id="i" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageI.jpg" format="jpg" />
-            <img id="j" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageJ.jpg" format="jpg" />
-            <img id="k" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageK.jpg" format="jpg" />
-            <img id="l" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageL.jpg" format="jpg" />
-            <img id="n" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageN.jpg" format="jpg" />
-            <img id="o" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageO.jpg" format="jpg" />
-            <img id="p" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageP.jpg" format="jpg" />
-            <img id="q" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageQ.jpg" format="jpg" />
-            <img id="r" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageR.jpg" format="jpg" />
-            <img id="s" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageS.jpg" format="jpg" />
-            <img id="t" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageT.jpg" format="jpg" />
-            <img id="u" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageU.jpg" format="jpg" />
-            <img id="v" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageV.jpg" format="jpg" />
-            <img id="w" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageW.jpg" format="jpg" />
-            <img id="x" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageX.jpg" format="jpg" />
-            <img id="y" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageY.jpg" format="jpg" />
-            <img id="z" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageZ.jpg" format="jpg" />
-            <img id="aa" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageAA.jpg" format="jpg" />
-            <img id="ab" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageAB.jpg" format="jpg" />
-            <img id="ac" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageAC.jpg" format="jpg" />
-            <img id="ad" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageAD.jpg" format="jpg" />
-            <img id="ae" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/imageAE.jpg" format="jpg" />
+            <img id="m" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageM.jpg" format="jpg" />
+            <img id="a" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageA.jpg" format="jpg" />
+            <img id="b" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageB.jpg" format="jpg" />
+            <img id="c" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageC.jpg" format="jpg" />
+            <img id="d" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageD.jpg" format="jpg" />
+            <img id="e" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageE.jpg" format="jpg" />
+            <img id="f" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageF.jpg" format="jpg" />
+            <img id="g" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageG.jpg" format="jpg" />
+            <img id="h" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageH.jpg" format="jpg" />
+            <img id="i" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageI.jpg" format="jpg" />
+            <img id="j" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageJ.jpg" format="jpg" />
+            <img id="k" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageK.jpg" format="jpg" />
+            <img id="l" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageL.jpg" format="jpg" />
+            <img id="n" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageN.jpg" format="jpg" />
+            <img id="o" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageO.jpg" format="jpg" />
+            <img id="p" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageP.jpg" format="jpg" />
+            <img id="q" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageQ.jpg" format="jpg" />
+            <img id="r" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageR.jpg" format="jpg" />
+            <img id="s" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageS.jpg" format="jpg" />
+            <img id="t" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageT.jpg" format="jpg" />
+            <img id="u" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageU.jpg" format="jpg" />
+            <img id="v" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageV.jpg" format="jpg" />
+            <img id="w" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageW.jpg" format="jpg" />
+            <img id="x" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageX.jpg" format="jpg" />
+            <img id="y" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageY.jpg" format="jpg" />
+            <img id="z" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageZ.jpg" format="jpg" />
+            <img id="aa" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageAA.jpg" format="jpg" />
+            <img id="ab" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageAB.jpg" format="jpg" />
+            <img id="ac" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageAC.jpg" format="jpg" />
+            <img id="ad" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageAD.jpg" format="jpg" />
+            <img id="ae" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/imageAE.jpg" format="jpg" />
         </images>
         <objects>
-            <floorplan id="1" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/floorplan1.gif"
+            <floorplan id="1" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/floorplan1.gif"
                        format="gif" />
-            <floorplan id="2" modTime="2009-01-01-12:30:00" url="http://www.realestate.com.au/tmp/floorplan2.gif"
+            <floorplan id="2" modTime="2009-01-01-12:30:00" url="http://www.someWebSite.com.au/tmp/floorplan2.gif"
                        format="gif" />
         </objects>
         <media>

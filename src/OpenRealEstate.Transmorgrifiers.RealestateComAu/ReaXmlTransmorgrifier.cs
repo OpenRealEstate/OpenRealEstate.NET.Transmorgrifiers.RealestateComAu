@@ -781,7 +781,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
                 var agent = new Agent
                 {
-                    Name = name
+                    Name = name.RemoveAnyExtraSpaces()
                 };
 
                 var orderValue = agentElement.AttributeValueOrDefault("id");

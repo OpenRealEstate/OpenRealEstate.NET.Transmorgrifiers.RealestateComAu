@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests")]
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 {
@@ -92,6 +95,21 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 
             var errorMessage = string.Format("Failed to parse the value '{0}' into a byte.", value);
             throw new Exception(errorMessage);
+        }
+
+        /// <summary>
+        /// Removes any extra spaces between two words. e.g. Sam    Smith => Sam Smith.
+        /// </summary>
+        /// <param name="value">string: value to check and potentially clean.</param>
+        /// <returns>string: Cleaned string/text.</returns>
+        internal static string RemoveAnyExtraSpaces(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            return string.Join(" ", value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
         }
 
         private static int ParseNumberToIntOrDefault(this string value)

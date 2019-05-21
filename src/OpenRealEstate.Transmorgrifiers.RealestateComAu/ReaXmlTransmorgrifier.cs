@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 using OpenRealEstate.Core;
 using OpenRealEstate.Core.Land;
 using OpenRealEstate.Core.Rental;
@@ -378,10 +379,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
 
             // Determine the category, so we know why type of listing we need to create.
+            // CategoryType == the listing type (Residential, etc).
             var categoryType = document.Name.ToCategoryType();
 
             // We can only handle a subset of all the category types.
-            var listing = existingListing ?? CreateListing(categoryType);
+            var listing = existingListing == null 
+                ? CreateListing(categoryType)
+                : CreateListing(existingListing);
             if (listing == null)
             {
                 // TODO: Add logging message.
@@ -432,6 +436,19 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             }
 
             return listing;
+        }
+
+        private static Listing CreateListing(Listing existingListing)
+        {
+            if (existingListing == null)
+            {
+                throw new ArgumentNullException(nameof(existingListing));
+            }
+
+            // Use json serialization as the way to deep clone.
+            var json = JsonConvert.SerializeObject(existingListing);
+            var newListing = JsonConvert.DeserializeObject(json, existingListing.GetType()) as Listing;
+            return newListing;
         }
 
         private static Listing CreateListing(CategoryType categoryType)

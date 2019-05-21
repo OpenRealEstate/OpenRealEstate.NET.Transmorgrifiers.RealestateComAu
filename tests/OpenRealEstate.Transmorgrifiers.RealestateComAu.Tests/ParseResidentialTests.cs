@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -701,6 +701,28 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             listing.Images[1].Url.EndsWith("a.jpg");
             listing.Images.Last().Id.ShouldBe("ae");
             listing.Images.Last().Url.EndsWith("ae.jpg");
+        }
+
+        [Fact]
+        public void GivenAnExistingListingAndTheResultListingChangesSomething_Parse_ReturnsANewListingWithTheSourceListingWasntChanged()
+        {
+            // Arrange.
+            var source = FakeListings.CreateAFakeResidentialListing();
+            var destination = FakeListings.CreateAFakeResidentialListing();
+
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-Minimum.xml");
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml, source);
+
+            // Assert.
+
+            // Change something on the result which shouldn't effect the original source.
+            var newListing = result.Listings.First().Listing;
+            newListing.Description.ShouldBe(source.Description); // Right now, both are the same.
+            newListing.Description = DateTime.UtcNow.ToString(); // Change.
+            newListing.Description.ShouldNotBe(source.Description); // Both should now be different.
         }
     }
 }

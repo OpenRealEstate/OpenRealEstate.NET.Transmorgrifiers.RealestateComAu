@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Version>0.0.0</Version>
     <Authors>Justin Adler</Authors>
     <Company>OpenRealEstate</Company>
@@ -19,8 +19,8 @@ This library is where all the magic happens :)</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Core" Version="11.0.0-dev" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Core" Version="14.0.0-dev" />
   </ItemGroup>
 
 </Project>

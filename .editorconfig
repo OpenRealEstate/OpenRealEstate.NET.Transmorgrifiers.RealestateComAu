@@ -163,3 +163,6 @@ indent_size = 2
 
 [*.cmd]
 indent_size = 2
+
+[*.sh]
+end_of_line = lf

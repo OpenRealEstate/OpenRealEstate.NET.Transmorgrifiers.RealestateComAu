@@ -1474,11 +1474,15 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
             salePricing.SoldPrice = document.NullableDecimalValueOrDefault();
 
-            // NOTE 1: no display price assumes a 'YES' and that the price -is- to be displayed.
-            // NOTE 2: A _display attribute_ value of 'range' can only valid for commerical properties ...
-            //         and .. we don't handle commerical. So it will end up throwing an exception
-            //         which is legit in this case.
-            // NOTE 3: display='no' means NO price is displayed, even if there's a priceText.
+            /*
+               NOTE 1: No display price assumes a 'YES' and that the price -is- to be displayed.
+               NOTE 2: A _display attribute_ value of 'range' can only valid for commerical properties ...
+                       and .. we don't handle commerical. So it will end up throwing an exception
+                       which is legit in this case.
+               NOTE 3: display='no' means NO price is displayed, even if there's a priceText.
+               NOTE 4: If a display='yes' but no price is displayed, then we will default to null/nothing to display.
+                       We assume the 'display' attribute is therefore ignored by the agent. 
+            */
             var soldDisplayAttribute = document.ValueOrDefault(null, "display");
             var isDisplay = string.IsNullOrWhiteSpace(soldDisplayAttribute) ||
                             soldDisplayAttribute.ParseOneYesZeroNoToBool();

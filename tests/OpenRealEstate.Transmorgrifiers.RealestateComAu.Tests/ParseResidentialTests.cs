@@ -56,6 +56,54 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 
         private const string FakeDataFolder = "Sample Data\\Residential\\";
 
+        public static TheoryData<string, SalePricing, string> SalePricingData => new TheoryData<string, SalePricing, string>
+        {
+            {
+                // No display attribute for the sold-data element means a 'yes', please show the value.
+                "REA-Residential-Sold-MissingDisplayPrice.xml",
+                new SalePricing
+                {
+                    SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
+                    SoldPrice = 580000M,
+                    SoldPriceText = "$580,000"
+                },
+                null // Ignored because display='yes'.
+            },
+            {
+                // Display='yes', no price == no price/display price.
+                "REA-Residential-Sold-DisplayPriceIsYesButMissingPrice.xml",
+                new SalePricing
+                {
+                    SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
+                    SoldPrice = null,
+                    SoldPriceText = null
+                },
+                null // Ignored because display='yes'.
+            },
+            {
+                // Display='no' and no override.
+                "REA-Residential-Sold-DisplayPriceIsNo.xml",
+                new SalePricing
+                {
+                    SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
+                    SoldPrice = 580000M,
+                    SoldPriceText = null
+                },
+                null // No override provided.
+            },
+            {
+                // Display='no' and but we do override.
+                "REA-Residential-Sold-DisplayPriceIsNo.xml",
+                new SalePricing
+                {
+                    SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
+                    SoldPrice = 580000M,
+                    SoldPriceText = "aaaa" // Provided override/default.
+                },
+                "aaaa"
+            }
+        };
+
         [Theory]
         [InlineData("REA-Residential-Current.xml")]
         [InlineData("REA-Segment-Residential-Current.xml")]
@@ -607,70 +655,23 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData(true, null)] // Set the default and then use that.
-        [InlineData(true, "aaaaa")] // Set the default and then use that.
-        [InlineData(false, null)] // Will use the default Sale price value.
-        public void GivenTheFileREAResidentialSoldWithDisplayPriceIsNo_Parse_ReturnsAResidentialSoldListingWithNoSoldPriceText(bool isDefaultSalePriceSet,
-                                                                                                                               string expectedSoldPriceText)
-        {
-            // Arrange.
-            var expectedListing = CreateAFakeEmptyResidentialListing("Residential-Sold-ABCD1234");
-            expectedListing.StatusType = StatusType.Sold;
-            expectedListing.SourceStatus = "Sold";
-            expectedListing.Pricing = new SalePricing
-            {
-                SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                SoldPrice = 580000M,
-                SoldPriceText = expectedSoldPriceText
-            };
-
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Sold-DisplayPriceIsNo.xml");
-            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
-            if (isDefaultSalePriceSet)
-            {
-                reaXmlTransmorgrifier.DefaultSoldPriceTextIfMissing = expectedSoldPriceText;
-            }
-
-            // Act.
-            var result = reaXmlTransmorgrifier.Parse(reaXml);
-
-            // Assert.
-            AssertResidentialListing(result, expectedListing);
-        }
-
-        // We're trying to check what values we get when we parse the segment with some data missing.
-        [Fact]
-        public void GivenTheFileREAResidentialSoldWithDisplayPriceIsNoAndMissingPrice_Parse_ReturnsAResidentialSoldListingWithNoSoldPriceText()
-        {
-            // Arrange.
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Sold-DisplayPriceIsNoAndMissingPrice.xml");
-            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
-
-            // Act.
-            var result = reaXmlTransmorgrifier.Parse(reaXml);
-
-            // Assert.
-            var listing = result.Listings.First().Listing as ResidentialListing;
-            listing.Pricing.SoldPrice.ShouldBeNull();
-        }
-
-        // NOTE: no display attribute for the sold-data element means a 'yes', please show the value.
-        [Fact]
-        public void GivenTheFileREAResidentialSoldWithMissingDisplayPrice_Parse_ReturnsAResidentialSoldListing()
+        [MemberData(nameof(SalePricingData))]
+        public void GivenTheFileREAResidentialSoldWithMissingDisplayPrice_Parse_ReturnsAResidentialSoldListing(string fileName, 
+                                                                                                               SalePricing salePricing,
+                                                                                                               string defaultSoldPriceTextIfMissing)
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyResidentialListing("Residential-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
             expectedListing.SourceStatus = "sold";
-            expectedListing.Pricing = new SalePricing
-            {
-                SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                SoldPrice = 580000M,
-                SoldPriceText = "$580,000"
-            };
+            expectedListing.Pricing = salePricing;
 
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Sold-MissingDisplayPrice.xml");
+            var reaXml = File.ReadAllText($"{FakeDataFolder}{fileName}");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+            if (!string.IsNullOrWhiteSpace(defaultSoldPriceTextIfMissing))
+            {
+                reaXmlTransmorgrifier.DefaultSoldPriceTextIfMissing = defaultSoldPriceTextIfMissing;
+            }
 
             // Act.
             var result = reaXmlTransmorgrifier.Parse(reaXml);

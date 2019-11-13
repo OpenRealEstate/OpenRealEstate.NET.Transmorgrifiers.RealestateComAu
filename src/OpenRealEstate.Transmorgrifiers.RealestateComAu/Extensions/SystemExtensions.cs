@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -102,16 +102,16 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
         /// </summary>
         /// <param name="value">string: value to check and potentially clean.</param>
         /// <returns>string: Cleaned string/text.</returns>
-        internal static string RemoveAnyExtraSpaces(this string value)
+        internal static string RemoveExtraCharsBetweenWords(this string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return string.Join(" ", value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+            return string.Join(" ", value.Split(new[] { ' ', '\r', '\n', '\t' },
+                                                StringSplitOptions.RemoveEmptyEntries));
         }
-
         private static int ParseNumberToIntOrDefault(this string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -128,7 +128,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             if (float.TryParse(value, out var number) &&
                 Math.Abs((number % 1)) < 0.01)
             {
-                return (int) number;
+                return (int)number;
             }
 
             var errorMessage = string.Format("Failed to parse the value '{0}' into an int. Is it a valid number? Does it contain decimal point values?", value);

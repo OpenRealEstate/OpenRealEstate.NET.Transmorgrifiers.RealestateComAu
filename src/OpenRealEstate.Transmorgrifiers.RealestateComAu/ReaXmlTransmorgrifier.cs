@@ -1472,7 +1472,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
             Guard.AgainstNull(salePricing);
 
-            salePricing.SoldPrice = document.DecimalValueOrDefault();
+            salePricing.SoldPrice = document.NullableDecimalValueOrDefault();
 
             // NOTE 1: no display price assumes a 'YES' and that the price -is- to be displayed.
             // NOTE 2: A _display attribute_ value of 'range' can only valid for commerical properties ...

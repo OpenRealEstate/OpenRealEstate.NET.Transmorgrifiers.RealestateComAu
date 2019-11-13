@@ -638,6 +638,22 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             AssertResidentialListing(result, expectedListing);
         }
 
+        // We're trying to check what values we get when we parse the segment with some data missing.
+        [Fact]
+        public void GivenTheFileREAResidentialSoldWithDisplayPriceIsNoAndMissingPrice_Parse_ReturnsAResidentialSoldListingWithNoSoldPriceText()
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Sold-DisplayPriceIsNoAndMissingPrice.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            var listing = result.Listings.First().Listing as ResidentialListing;
+            listing.Pricing.SoldPrice.ShouldBeNull();
+        }
+
         // NOTE: no display attribute for the sold-data element means a 'yes', please show the value.
         [Fact]
         public void GivenTheFileREAResidentialSoldWithMissingDisplayPrice_Parse_ReturnsAResidentialSoldListing()

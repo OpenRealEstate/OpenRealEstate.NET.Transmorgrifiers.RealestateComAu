@@ -198,6 +198,9 @@
     <None Update="Sample Data\Residential\REA-Residential-Sold-DisplayAttributeIsRange.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Sample Data\Residential\REA-Residential-Sold-DisplayPriceIsNoAndMissingPrice.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Sample Data\Residential\REA-Residential-Sold-DisplayPriceIsNo.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

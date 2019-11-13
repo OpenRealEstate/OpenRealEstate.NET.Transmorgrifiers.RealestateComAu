@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
@@ -242,6 +242,25 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             if (string.IsNullOrEmpty(value))
             {
                 return 0M;
+            }
+
+            // NOTE: This -cannot- handle currencies.
+            if (decimal.TryParse(value, out var number))
+            {
+                return number;
+            }
+
+            var errorMessage = ParsingErrorMessage(value, "decimal", xElement, elementName);
+            throw new Exception(errorMessage);
+        }
+
+        internal static decimal? NullableDecimalValueOrDefault(this XElement xElement,
+                                                      string elementName = null)
+        {
+            var value = xElement.ValueOrDefault(elementName);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
             }
 
             // NOTE: This -cannot- handle currencies.

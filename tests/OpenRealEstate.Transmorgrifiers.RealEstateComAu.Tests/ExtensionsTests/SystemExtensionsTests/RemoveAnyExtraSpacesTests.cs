@@ -1,10 +1,10 @@
-﻿using OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions;
+using OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions;
 using Shouldly;
 using Xunit;
 
-namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.Extensions
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.SystemExtensionsTests
 {
-    public class SystemExtensionsTests
+    public class RemoveAnyExtraSpacesTests
     {
         [Theory]
         [InlineData("a", "a")]

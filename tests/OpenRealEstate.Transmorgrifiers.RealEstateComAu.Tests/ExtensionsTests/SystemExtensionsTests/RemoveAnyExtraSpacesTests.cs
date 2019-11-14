@@ -4,7 +4,7 @@ using Xunit;
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.SystemExtensionsTests
 {
-    public class RemoveAnyExtraSpacesTests
+    public class RemoveExtraCharsBetweenWordsTests
     {
         [Theory]
         [InlineData("a", "a")]
@@ -21,7 +21,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.
         [InlineData(" abc  \n cde", "abc cde")]
         [InlineData(" abc  \r cde ", "abc cde")]
         [InlineData("  abc   \t \n cde  ", "abc cde")]
-        public void GivenAString_RemoveAnyExtraSpaces_ReturnsACleanedString(string sourceText, string expectedText)
+        public void GivenAString_RemoveExtraCharsBetweenWords_ReturnsACleanedString(string sourceText, string expectedText)
         {
             // Arrange & Act.
             var result = sourceText.RemoveExtraCharsBetweenWords();

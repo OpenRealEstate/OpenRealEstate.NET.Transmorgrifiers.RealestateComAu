@@ -98,7 +98,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
         }
 
         /// <summary>
-        /// Removes any extra spaces between two words. e.g. Sam    Smith => Sam Smith.
+        /// Removes any extra spaces (and other funky characters) between two words. e.g. Sam    Smith => Sam Smith.
         /// </summary>
         /// <param name="value">string: value to check and potentially clean.</param>
         /// <returns>string: Cleaned string/text.</returns>
@@ -112,6 +112,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             return string.Join(" ", value.Split(new[] { ' ', '\r', '\n', '\t' },
                                                 StringSplitOptions.RemoveEmptyEntries));
         }
+
         private static int ParseNumberToIntOrDefault(this string value)
         {
             if (string.IsNullOrWhiteSpace(value))

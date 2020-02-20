@@ -1202,7 +1202,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                     let contentType = x.AttributeValueOrDefault("format")
                     where (!string.IsNullOrWhiteSpace(url) ||
                            !string.IsNullOrWhiteSpace(file)) &&
-                          !string.IsNullOrWhiteSpace(id)
+                           !string.IsNullOrWhiteSpace(id)
                     orderby reaOrder
                     select new Media
                     {
@@ -1238,7 +1238,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                     {
                         CreatedOn = null, // We don't have this data in the REA Xml file.
                         Order = 1,
-                        Url = videoUrl
+                        Url = videoUrl,
+                        ContentType = "application/octet-stream"
                     });
                 }
 

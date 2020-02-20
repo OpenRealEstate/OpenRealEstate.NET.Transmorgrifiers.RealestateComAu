@@ -11,7 +11,7 @@ This is a transmogrifier (i.e. converter) that converts an REA-XML file to an Op
 ## REA-XML?
 Realestate.com.au created an xml schema that (for them) defines how they want a listing to be represented. For the start of the 2000's it's been the industry (defacto) standard file format (in Australia) which all CRM's/Multi-loaders/Providers (pick your favourite name) have adopted.
 
-Information on this schema can be [found on their help/support portal](http://ask.realestate.com.au/reaxml/).
+Information on this schema can be [found on their partner portal](https://partner.realestate.com.au/documentation/reaxml/elements/).
 
 This library only converts _from_ REA-XML format to an OpenRealEstate model. Not the other way around.
 

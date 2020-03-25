@@ -312,11 +312,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             result.Errors.First().ListingId.ShouldBe("Residential-Current-ABCD1234");
         }
 
-        [Fact]
-        public void GivenAFileWithAtLeastOneDocument_Convert_ReturnsAListingWithADocument()
+        [Theory]
+        [InlineData("REA-Residential-Current.xml")] // 1 SoI document.
+        [InlineData("REA-Residential-Current-WithMultipleValidDocuments.xml")] // 3 SoI Documents.
+        public void GivenAFileWithAtLeastOneDocument_Convert_ReturnsAListingWithASingleDocument(string fileName)
         {
             // Arramge.
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current.xml");
+            var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             // Act.
@@ -332,6 +334,22 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             document.Order.ShouldBe(1);
             document.Tag.ShouldBe("statementOfInformation");
             document.Url.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void GivenAFileWithAnInvalidDocument_Convert_ReturnsAListingWithNoDocuments()
+        {
+            // Arramge.
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithIncorrectDocumentUsage.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            var listingData = result.Listings.First();
+            var documents = listingData.Listing.Documents;
+            documents.Count.ShouldBe(0);
         }
 
         [Fact]

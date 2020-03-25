@@ -1263,17 +1263,28 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 return;
             }
 
+            // Notes: Will only extract documents that:
+            // 1 - Are a 'Statement Of Information'
+            // 2 - First SoI document.
             var attachmentElements = mediaElement.Elements("attachment")
+                                                 .Where(element =>
+                                                 {
+                                                     var usageAttribute = element.Attribute("usage");
+                                                     return usageAttribute != null &&
+                                                        usageAttribute.Value.Equals("StatementOfInformation", StringComparison.OrdinalIgnoreCase);
+                                                 })
                                                  .Select((e,
                                                           order) => new Media
-                                                 {
-                                                     CreatedOn = DateTime.UtcNow,
-                                                     Id = e.AttributeValueOrDefault("id"),
-                                                     Tag = e.AttributeValueOrDefault("usage"),
-                                                     Url = e.AttributeValueOrDefault("url"),
-                                                     ContentType = e.AttributeValueOrDefault("contentType"),
-                                                     Order = ++order
-                                                 });
+                                                          {
+                                                              CreatedOn = DateTime.UtcNow,
+                                                              Id = e.AttributeValueOrDefault("id"),
+                                                              Tag = e.AttributeValueOrDefault("usage"),
+                                                              Url = e.AttributeValueOrDefault("url"),
+                                                              ContentType = e.AttributeValueOrDefault("contentType"),
+                                                              Order = ++order
+                                                          })
+                                                 .OrderBy(x => x.Order)
+                                                 .Take(1); // Return the first -but- as part of a list, still.
             listing.Documents = attachmentElements.ToArray();
         }
 

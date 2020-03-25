@@ -98,7 +98,7 @@
                        format="gif" />
         </objects>
         <media>
-          <attachment usage="statementOfInformation" contentType="application/pdf" id="aaaa1111" url=""></attachment>
+          <attachment usage="statementOfInformation" contentType="application/pdf" id="aaaa1111" url="http://www.someWebSite.com.au/tmp/soi-doc-1.gif"></attachment>
         </media>
         <videoLink href="http://www.foo.tv/abcd.html"/>
         <ecoFriendly>

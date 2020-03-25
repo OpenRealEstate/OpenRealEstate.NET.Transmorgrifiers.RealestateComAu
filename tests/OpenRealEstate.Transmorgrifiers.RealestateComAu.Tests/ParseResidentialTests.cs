@@ -331,7 +331,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             document.CreatedOn.ShouldNotBeNull();
             document.Order.ShouldBe(1);
             document.Tag.ShouldBe("statementOfInformation");
-            document.Url.ShouldBeEmpty();
+            document.Url.ShouldNotBeNull();
         }
 
         [Fact]

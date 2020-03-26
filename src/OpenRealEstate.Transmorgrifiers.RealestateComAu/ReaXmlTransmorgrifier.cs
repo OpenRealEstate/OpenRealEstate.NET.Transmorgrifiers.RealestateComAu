@@ -1266,26 +1266,35 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             // Notes: Will only extract documents that:
             // 1 - Are a 'Statement Of Information'
             // 2 - First SoI document.
-            var attachmentElements = mediaElement.Elements("attachment")
-                                                 .Where(element =>
-                                                 {
-                                                     var usageAttribute = element.Attribute("usage");
-                                                     return usageAttribute != null &&
-                                                        usageAttribute.Value.Equals("StatementOfInformation", StringComparison.OrdinalIgnoreCase);
-                                                 })
-                                                 .Select((e,
-                                                          order) => new Media
-                                                          {
-                                                              CreatedOn = DateTime.UtcNow,
-                                                              Id = e.AttributeValueOrDefault("id"),
-                                                              Tag = e.AttributeValueOrDefault("usage"),
-                                                              Url = e.AttributeValueOrDefault("url"),
-                                                              ContentType = e.AttributeValueOrDefault("contentType"),
-                                                              Order = ++order
-                                                          })
-                                                 .OrderBy(x => x.Order)
-                                                 .Take(1); // Return the first -but- as part of a list, still.
-            listing.Documents = attachmentElements.ToArray();
+            listing.Documents = mediaElement.Elements("attachment")
+                                            .Select((e,
+                                                    order) => new Media
+                                                    {
+                                                        CreatedOn = DateTime.UtcNow,
+                                                        Id = e.AttributeValueOrDefault("id"),
+                                                        Tag = e.AttributeValueOrDefault("usage"),
+                                                        Url = e.AttributeValueOrDefault("url"),
+                                                        ContentType = e.AttributeValueOrDefault("contentType"),
+                                                        Order = ++order
+                                                    })
+                                            .OrderBy(x => x.Order)
+                                            .ToList();
+
+            var invalidTags = listing.Documents.Where(x => !x.Tag.Equals("StatementOfInformation", StringComparison.OrdinalIgnoreCase))
+                                               .Select(x => x.Tag);
+            if (invalidTags.Any())
+            {
+                var errorMessage = $"At least 1 document has an invalid 'usage' value. Invalid values: {string.Join(", ", invalidTags)}";
+                throw new Exception(errorMessage);
+            }
+
+            var invalidContentTypes = listing.Documents.Where(x => !x.ContentType.Equals("application/pdf", StringComparison.OrdinalIgnoreCase))
+                                                       .Select(x => x.ContentType);
+            if (invalidContentTypes.Any())
+            {
+                var errorMessage = $"At least 1 document has an invalid 'contentType' value. Invalid values: {string.Join(", ", invalidContentTypes)}";
+                throw new Exception(errorMessage);
+            }
         }
 
         private static void ExtractResidentialAndRentalPropertyType(XElement document,

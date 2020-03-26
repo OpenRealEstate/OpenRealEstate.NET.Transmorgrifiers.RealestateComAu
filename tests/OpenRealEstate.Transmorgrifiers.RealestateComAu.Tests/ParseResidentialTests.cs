@@ -313,9 +313,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Residential-Current.xml")] // 1 SoI document.
-        [InlineData("REA-Residential-Current-WithMultipleValidDocuments.xml")] // 3 SoI Documents.
-        public void GivenAFileWithAtLeastOneDocument_Convert_ReturnsAListingWithASingleDocument(string fileName)
+        [InlineData("REA-Residential-Current.xml", 1)] // 1 SoI document.
+        [InlineData("REA-Residential-Current-WithMultipleValidDocuments.xml", 3)] // 3 SoI Documents.
+        public void GivenAFileWithAtLeastOneDocument_Convert_ReturnsAListingWithASingleDocument(string fileName, int expectedDocumentsCount)
         {
             // Arramge.
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
@@ -327,7 +327,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Assert.
             var listingData = result.Listings.First();
             var documents = listingData.Listing.Documents;
-            documents.Count.ShouldBe(1);
+            documents.Count.ShouldBe(expectedDocumentsCount);
             var document = documents.First();
             document.Id.ShouldBe("aaaa1111");
             document.CreatedOn.ShouldNotBeNull();
@@ -336,20 +336,22 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             document.Url.ShouldNotBeNull();
         }
 
-        [Fact]
-        public void GivenAFileWithAnInvalidDocument_Convert_ReturnsAListingWithNoDocuments()
+        [Theory]
+        [InlineData("REA-Residential-Current-WithIncorrectDocumentUsage.xml", "At least 1 document has an invalid 'usage' value. Invalid values: blah-1, blah-2, blah-3")]
+        [InlineData("REA-Residential-Current-WithIncorrectDocumentContentType.xml", "At least 1 document has an invalid 'contentType' value. Invalid values: blah-1, blah-2, blah-3")]
+        public void GivenAFileWithAnInvalidDocument_Convert_ReturnsAnErrorResult(string fileName, string expectedErrorMessage)
         {
             // Arramge.
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithIncorrectDocumentUsage.xml");
+            var reaXml = File.ReadAllText(FakeDataFolder + fileName);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             // Act.
             var result = reaXmlTransmorgrifier.Parse(reaXml);
 
             // Assert.
-            var listingData = result.Listings.First();
-            var documents = listingData.Listing.Documents;
-            documents.Count.ShouldBe(0);
+            result.Errors.Count.ShouldBe(1);
+            var error = result.Errors.First();
+            error.ExceptionMessage.ShouldBe(expectedErrorMessage);
         }
 
         [Fact]

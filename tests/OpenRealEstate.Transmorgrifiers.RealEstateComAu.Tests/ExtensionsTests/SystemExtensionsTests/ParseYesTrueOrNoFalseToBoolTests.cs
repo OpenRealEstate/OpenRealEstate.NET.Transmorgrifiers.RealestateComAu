@@ -28,7 +28,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.
             var exception = Should.Throw<ArgumentOutOfRangeException>( () => "aaa".ParseYesTrueOrNoFalseToBool());
 
             // Assert.
-            exception.Message.ShouldBe("Specified argument was out of the range of valid values.\r\nParameter name: value");
+            exception.Message.ShouldBe("Specified argument was out of the range of valid values. (Parameter 'value')");
         }
     }
 }

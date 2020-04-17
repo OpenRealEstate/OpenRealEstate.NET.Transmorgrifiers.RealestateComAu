@@ -62,7 +62,7 @@
         <otherFeatures>balcony, courtyard</otherFeatures>
     </features>
     <landDetails>
-        <area unit="square">80</area>
+        <area unit="squareMeter">80</area>
         <frontage unit="meter">20</frontage>
         <depth unit="meter" side="rear">40</depth>
         <depth unit="meter" side="left">60</depth>
@@ -70,7 +70,7 @@
         <crossOver value="left" />
     </landDetails>
     <buildingDetails>
-        <area unit="square">40</area>
+        <area unit="squareMeter">40</area>
         <newlyBuilt value="yes" />
         <energyRating>4.5</energyRating>
     </buildingDetails>

@@ -33,7 +33,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.
             var exception = Should.Throw<ArgumentOutOfRangeException>( () => value.ParseOneYesZeroNoToBool());
 
             // Assert.
-            exception.Message.ShouldBe($"Value '{value}' is out of range. It should only be 0/1/yes/no.\r\nParameter name: value");
+            exception.Message.ShouldBe($"Value '{value}' is out of range. It should only be 0/1/yes/no. (Parameter 'value')");
         }
     }
 }

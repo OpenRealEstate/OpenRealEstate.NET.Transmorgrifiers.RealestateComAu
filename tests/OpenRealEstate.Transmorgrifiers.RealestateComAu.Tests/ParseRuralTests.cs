@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using OpenRealEstate.Core;
@@ -41,7 +41,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 
         [Theory]
         [InlineData("REA-Rural-Current.xml")]
-        [InlineData("REA-Segment-Rural-Current.xml")]
+        //[InlineData("REA-Segment-Rural-Current.xml")]
         public void GivenTheFileREARuralCurrent_Parse_ReturnsARuralAvailableListing(string fileName)
         {
             // Arrange.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -123,7 +123,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             expectedListing.Address.StreetNumber = "LOT 12/39";
             expectedListing.Address.DisplayAddress = expectedListing.Address.ToFormattedAddress(true, StateReplacementType.ReplaceToLongText, false, true);
             expectedListing.LandDetails.CrossOver = null;
-            expectedListing.LandDetails.Depths = new List<Depth>();
+            expectedListing.LandDetails.Sides = new List<Side>();
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Land-Current-IncompleteLandDetails.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 

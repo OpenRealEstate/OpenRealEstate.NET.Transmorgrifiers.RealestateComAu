@@ -54,7 +54,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             result.Errors.First().InvalidData.ShouldNotBeNullOrWhiteSpace();
         }
 
-        private const string FakeDataFolder = "Sample Data\\Residential\\";
+        private const string FakeDataFolder = "Sample Data/Residential/";
 
         public static TheoryData<string, SalePricing, string> SalePricingData => new TheoryData<string, SalePricing, string>
         {
@@ -264,7 +264,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         {
             // Arrange.
             var reaXml =
-                File.ReadAllText("Sample Data\\Residential\\REA-Residential-Current-WithAuctionDateTimePlaceholder.xml");
+                File.ReadAllText("Sample Data/Residential/REA-Residential-Current-WithAuctionDateTimePlaceholder.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             var updatedXml = reaXml.Replace("REPLACE-THIS-VALUE", bustedDateTime);
@@ -295,7 +295,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         {
             // Arrange.
             var reaXml =
-                File.ReadAllText("Sample Data\\Residential\\REA-Residential-Current-WithAuctionDateTimePlaceholder.xml");
+                File.ReadAllText("Sample Data/Residential/REA-Residential-Current-WithAuctionDateTimePlaceholder.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             var updatedXml = reaXml.Replace("REPLACE-THIS-VALUE", bustedDateTime);

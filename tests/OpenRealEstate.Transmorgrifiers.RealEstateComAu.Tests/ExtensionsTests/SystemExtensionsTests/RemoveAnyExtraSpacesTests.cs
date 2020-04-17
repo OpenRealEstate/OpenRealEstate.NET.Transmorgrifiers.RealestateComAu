@@ -13,7 +13,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.
         [InlineData("a   ", "a")]
         [InlineData("   a", "a")]
         [InlineData("   a   ", "a")]
-        [InlineData("a   ", "a")]
         [InlineData(" aaa ", "aaa")]
         [InlineData(" a b c d e f ", "a b c d e f")]
         [InlineData("  a  b  c  d  e  f ", "a b c d e f")]

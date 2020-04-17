@@ -15,7 +15,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public class ParseLandTests
     {
-        private const string FakeDataFolder = "Sample Data\\Land\\";
+        private const string FakeDataFolder = "Sample Data/Land/";
 
         private static LandListing CreateAFakeEmptyLandListing(string id)
         {

@@ -13,7 +13,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public class ParseRuralTests
     {
-        private const string FakeDataFolder = "Sample Data\\Rural\\";
+        private const string FakeDataFolder = "Sample Data/Rural/";
 
         private static RuralListing CreateAFakeEmptyRuralListing(string id)
         {
@@ -41,7 +41,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 
         [Theory]
         [InlineData("REA-Rural-Current.xml")]
-        //[InlineData("REA-Segment-Rural-Current.xml")]
+        [InlineData("REA-Segment-Rural-Current.xml")]
         public void GivenTheFileREARuralCurrent_Parse_ReturnsARuralAvailableListing(string fileName)
         {
             // Arrange.

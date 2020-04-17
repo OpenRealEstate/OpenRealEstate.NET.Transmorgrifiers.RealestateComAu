@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using OpenRealEstate.Core.Filters;
 using OpenRealEstate.Core.Rental;
@@ -16,7 +16,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             public void GivenTheFileREAAllTypes_Parse_ReturnsAListOfListings()
             {
                 // Arrange.
-                var reaXml = File.ReadAllText("Sample Data\\REA-AllTypes.xml");
+                var reaXml = File.ReadAllText("Sample Data/REA-AllTypes.xml");
                 var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
                 // Act.
@@ -76,7 +76,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             public void GivenTheFileREABadContent_Parse_ThrowsAnException()
             {
                 // Arrange.
-                var reaXml = File.ReadAllText("Sample Data\\REA-BadContent.xml");
+                var reaXml = File.ReadAllText("Sample Data/REA-BadContent.xml");
                 var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
                 // Act.
@@ -99,7 +99,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             public void GivenTheFileREAInvalidCharacterAndBadCharacterCleaning_Parse_ThrowsAnException()
             {
                 // Arrange.
-                var reaXml = File.ReadAllText("Sample Data\\REA-InvalidCharacter.xml");
+                var reaXml = File.ReadAllText("Sample Data/REA-InvalidCharacter.xml");
                 var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
                 // Act.
@@ -124,7 +124,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             public void GivenTheFileREAInvalidCharacterAndNoBadCharacterCleaning_Parse_ThrowsAnException()
             {
                 // Arrange.
-                var reaXml = File.ReadAllText("Sample Data\\REA-InvalidCharacter.xml");
+                var reaXml = File.ReadAllText("Sample Data/REA-InvalidCharacter.xml");
                 var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
                 // Act.
@@ -144,7 +144,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             public void GivenTheFileREAMixedContent_Parse_ReturnsAParsedResultWithListingsAndUnhandedData()
             {
                 // Arrange.
-                var reaXml = File.ReadAllText("Sample Data\\REA-MixedContent.xml");
+                var reaXml = File.ReadAllText("Sample Data/REA-MixedContent.xml");
                 var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
                 // Act.

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using OpenRealEstate.Core;
 using OpenRealEstate.Core.Rental;
 using OpenRealEstate.FakeData;
@@ -15,7 +15,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public class ParseRentalTests
     {
-        private const string FakeDataFolder = "Sample Data\\Rental\\";
+        private const string FakeDataFolder = "Sample Data/Rental/";
 
         private static RentalListing CreateAFakeEmptyRentalListing(string id)
         {

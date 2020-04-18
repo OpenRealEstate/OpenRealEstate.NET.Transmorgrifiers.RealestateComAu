@@ -18,11 +18,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
     public class ParseResidentialTests : SetupTests
     {
-        public ParseResidentialTests(ITestOutputHelper output)
-        {
-            _output = output ?? throw new ArgumentNullException(nameof(output));
-        }
-
         private static ResidentialListing CreateAFakeEmptyResidentialListing(string id)
         {
             id.ShouldNotBeNullOrWhiteSpace();
@@ -61,7 +56,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         private const string FakeDataFolder = "Sample Data/Residential/";
-        private readonly ITestOutputHelper _output;
 
         public static TheoryData<string, SalePricing, string> SalePricingData => new TheoryData<string, SalePricing, string>
         {
@@ -191,10 +185,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                                                                                                                     StatusType statusType)
         {
             // Arrange.
-            // Display the name of the current thread culture.
-            _output.WriteLine("CurrentCulture is {0}.", CultureInfo.CurrentCulture.Name);
-            _output.WriteLine("CurrentUICulture is {0}.", CultureInfo.CurrentUICulture.Name);
-
             ResidentialListing expectedListing;
             if (statusType == StatusType.Available)
             {

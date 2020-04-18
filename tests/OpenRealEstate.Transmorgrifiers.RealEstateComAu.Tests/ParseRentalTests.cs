@@ -13,7 +13,7 @@ using Xunit;
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
-    public class ParseRentalTests
+    public class ParseRentalTests : SetupTests
     {
         private const string FakeDataFolder = "Sample Data/Rental/";
 

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
-    public class ParseRuralTests
+    public class ParseRuralTests : SetupTests
     {
         private const string FakeDataFolder = "Sample Data/Rural/";
 
@@ -90,7 +90,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
                 SoldPrice = 85000
             };
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rural-Sold-DisplayPriceisNo.xml");
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rural-Sold-DisplayPriceIsNo.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             // Act.

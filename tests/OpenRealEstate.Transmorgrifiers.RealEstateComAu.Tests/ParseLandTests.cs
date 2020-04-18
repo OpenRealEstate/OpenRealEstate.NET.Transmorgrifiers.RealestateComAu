@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using OpenRealEstate.Core;
@@ -13,7 +14,7 @@ using LandRuralCategoryType = OpenRealEstate.Core.Land.CategoryType;
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
-    public class ParseLandTests
+    public class ParseLandTests : SetupTests
     {
         private const string FakeDataFolder = "Sample Data/Land/";
 

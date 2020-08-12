@@ -10,9 +10,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="OpenRealEstate.Testing" Version="13.0.0-dev" />
-    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="17.0.0-dev" />
-    <PackageReference Include="OpenRealEstate.Validation" Version="30.0.0-dev" />
+    <PackageReference Include="OpenRealEstate.Testing" Version="15.0.0-dev" />
+    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="20.0.0-dev" />
+    <PackageReference Include="OpenRealEstate.Validation" Version="31.0.0-dev" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
@@ -91,6 +91,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample Data\Rental\REA-Segment-Rental-Current.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample Data\Residential\REA-Residential-Current-WithSomeIncorrectDocumentContentType.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample Data\Residential\REA-Residential-Current-WithIncorrectDocumentContentType.xml">

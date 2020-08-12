@@ -224,17 +224,21 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
             try
             {
+                var warnings = new List<string>();
+
                 var listing = ParseReaXml(element,
                                           existingListing,
                                           DefaultCultureInfo,
                                           AddressDelimeter,
                                           DefaultSalePriceTextIfMissing,
-                                          DefaultSoldPriceTextIfMissing);
+                                          DefaultSoldPriceTextIfMissing,
+                                          warnings);
 
                 successfullyParsedListings.Add(new ListingResult
                 {
                     Listing = listing,
-                    SourceData = element.ToString()
+                    SourceData = element.ToString(),
+                    Warnings = warnings.Any() ? warnings : null
                 });
             }
             catch (ParsingException exception)
@@ -242,7 +246,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 var error = new ParsedError(exception.Message, element.ToString())
                 {
                     AgencyId = exception.AgencyId,
-                    ListingId = exception.ListingId
+                    ListingId = exception.ListingId,
                 };
                 invalidData.Add(error);
             }
@@ -374,9 +378,11 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                            CultureInfo cultureInfo,
                                            string addressDelimeter,
                                            string defaultSalePriceTextIfMissing,
-                                           string defaultSoldPriceTextIfMissing)
+                                           string defaultSoldPriceTextIfMissing,
+                                           IList<string> warnings)
         {
             Guard.AgainstNull(document);
+            Guard.AgainstNull(warnings);
 
             // Determine the category, so we know why type of listing we need to create.
             // CategoryType == the listing type (Residential, etc).
@@ -395,7 +401,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             try
             {
                 // Extract common data.
-                ExtractCommonData(listing, document, addressDelimeter);
+                ExtractCommonData(listing, document, addressDelimeter, warnings);
 
                 // Extract specific data.
                 if (listing is ResidentialListing)
@@ -558,10 +564,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
         private static void ExtractCommonData(Listing listing,
                                               XElement document,
-                                              string addressDelimeter)
+                                              string addressDelimeter,
+                                              IList<string> warnings)
         {
             Guard.AgainstNull(listing);
             Guard.AgainstNull(document);
+            Guard.AgainstNull(warnings);
 
             listing.UpdatedOn = ToDateTime(document.AttributeValue("modTime"), "<root modTime>");
 
@@ -592,7 +600,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             ExtractImages(document, listing);
             ExtractFloorPlans(document, listing);
             ExtractVideos(document, listing);
-            ExtractDocuments(document, listing);
+            ExtractDocuments(document, listing, warnings);
             ExtractFeatures(document, listing);
             ExtractLandDetails(document, listing);
             ExtractExternalLinks(document, listing);
@@ -1252,10 +1260,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
         // NOTE: This is a extracting a collection. As such, we hard-copy the resultant collection
         //       over to the listing. No guessing or matching.
         private static void ExtractDocuments(XContainer document,
-                                             Listing listing)
+                                             Listing listing,
+                                             IList<string> warnings)
         {
             Guard.AgainstNull(document);
             Guard.AgainstNull(listing);
+            Guard.AgainstNull(warnings);
 
             var mediaElement = document.Element("media");
             if (mediaElement == null)
@@ -1263,38 +1273,45 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 return;
             }
 
+            const string validTag = "StatementOfInformation";
+            const string validContentType = "application/pdf";
+
             // Notes: Will only extract documents that:
             // 1 - Are a 'Statement Of Information'
             // 2 - First SoI document.
-            listing.Documents = mediaElement.Elements("attachment")
-                                            .Select((e,
-                                                    order) => new Media
-                                                    {
-                                                        CreatedOn = DateTime.UtcNow,
-                                                        Id = e.AttributeValueOrDefault("id"),
-                                                        Tag = e.AttributeValueOrDefault("usage"),
-                                                        Url = e.AttributeValueOrDefault("url"),
-                                                        ContentType = e.AttributeValueOrDefault("contentType"),
-                                                        Order = ++order
-                                                    })
-                                            .OrderBy(x => x.Order)
-                                            .ToList();
+            var documents = mediaElement.Elements("attachment")
+                                        .Select((e,
+                                                order) => new Media
+                                                {
+                                                    CreatedOn = DateTime.UtcNow,
+                                                    Id = e.AttributeValueOrDefault("id"),
+                                                    Tag = e.AttributeValueOrDefault("usage"),
+                                                    Url = e.AttributeValueOrDefault("url"),
+                                                    ContentType = e.AttributeValueOrDefault("contentType"),
+                                                    Order = ++order
+                                                })
+                                        .OrderBy(x => x.Order)
+                                        .ToList();
 
-            var invalidTags = listing.Documents.Where(x => !x.Tag.Equals("StatementOfInformation", StringComparison.OrdinalIgnoreCase))
-                                               .Select(x => x.Tag);
+            var invalidTags = documents.Where(x => !x.Tag.Equals(validTag, StringComparison.OrdinalIgnoreCase))
+                                       .Select(x => x.Tag);
             if (invalidTags.Any())
             {
                 var errorMessage = $"At least 1 document has an invalid 'usage' value. Invalid values: {string.Join(", ", invalidTags)}";
-                throw new Exception(errorMessage);
+                warnings.Add(errorMessage);
             }
 
-            var invalidContentTypes = listing.Documents.Where(x => !x.ContentType.Equals("application/pdf", StringComparison.OrdinalIgnoreCase))
-                                                       .Select(x => x.ContentType);
+            var invalidContentTypes = documents.Where(x => !x.ContentType.Equals(validContentType, StringComparison.OrdinalIgnoreCase))
+                                               .Select(x => x.ContentType);
             if (invalidContentTypes.Any())
             {
                 var errorMessage = $"At least 1 document has an invalid 'contentType' value. Invalid values: {string.Join(", ", invalidContentTypes)}";
-                throw new Exception(errorMessage);
+                warnings.Add(errorMessage);
             }
+
+            listing.Documents = documents.Where(x => x.Tag.Equals(validTag, StringComparison.OrdinalIgnoreCase) &&
+                                                     x.ContentType.Equals(validContentType, StringComparison.OrdinalIgnoreCase))
+                                         .ToList();
         }
 
         private static void ExtractResidentialAndRentalPropertyType(XElement document,

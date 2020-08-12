@@ -338,9 +338,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Residential-Current-WithIncorrectDocumentUsage.xml", "At least 1 document has an invalid 'usage' value. Invalid values: blah-1, blah-2, blah-3")]
-        [InlineData("REA-Residential-Current-WithIncorrectDocumentContentType.xml", "At least 1 document has an invalid 'contentType' value. Invalid values: blah-1, blah-2, blah-3")]
-        public void GivenAFileWithAnInvalidDocument_Convert_ReturnsAnErrorResult(string fileName, string expectedErrorMessage)
+        [InlineData("REA-Residential-Current-WithIncorrectDocumentUsage.xml", "At least 1 document has an invalid 'usage' value. Invalid values: blah-1, blah-2, blah-3", 0)]
+        [InlineData("REA-Residential-Current-WithIncorrectDocumentContentType.xml", "At least 1 document has an invalid 'contentType' value. Invalid values: blah-1, blah-2, blah-3", 0)]
+        [InlineData("REA-Residential-Current-WithSomeIncorrectDocumentContentType.xml", "At least 1 document has an invalid 'contentType' value. Invalid values: blah-1, blah-2, blah-3", 1)]
+        public void GivenAFileWithAnInvalidDocument_Convert_ReturnsAnErrorResult(string fileName, string expectedWarning, int expectedValidDocuments)
         {
             // Arramge.
             var reaXml = File.ReadAllText(FakeDataFolder + fileName);
@@ -350,9 +351,11 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             var result = reaXmlTransmorgrifier.Parse(reaXml);
 
             // Assert.
-            result.Errors.Count.ShouldBe(1);
-            var error = result.Errors.First();
-            error.ExceptionMessage.ShouldBe(expectedErrorMessage);
+            result.Errors.ShouldBeEmpty();
+            result.Listings.First().Listing.Documents.Count.ShouldBe(expectedValidDocuments);
+            var warnings = result.Listings.First().Warnings;
+            warnings.ShouldNotBeEmpty();
+            warnings.First().ShouldBe(expectedWarning);
         }
 
         [Fact]
@@ -746,7 +749,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         {
             // Arrange.
             var source = FakeListings.CreateAFakeResidentialListing();
-            var destination = FakeListings.CreateAFakeResidentialListing();
 
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-Minimum.xml");

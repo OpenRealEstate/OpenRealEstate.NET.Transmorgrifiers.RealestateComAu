@@ -389,19 +389,35 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                        : value.ParseByteValueOrDefault();
         }
 
-        internal static UnitOfMeasure UnitOfMeasureOrDefault(this XElement xElement,
-                                                             string elementName,
-                                                             string attributeName)
+        internal static Side SideOrDefault(this XElement xElement,
+                                           string elementName,
+                                           string attributeName)
+        {
+            var side = xElement.UnitOfMeasureOrDefault<Side>(elementName, attributeName);
+            if (side == null)
+            {
+                return null;
+            }
+
+            side.Name = elementName;
+            
+            return side;
+        }
+
+        internal static T UnitOfMeasureOrDefault<T>(this XElement xElement,
+                                                    string elementName,
+                                                    string attributeName) where T : UnitOfMeasure, new()
         {
             var value = xElement.DecimalValueOrDefault(elementName);
 
-            UnitOfMeasure unitOfMeasure = null;
+            T unitOfMeasure = null;
             var type = xElement.ValueOrDefault(elementName, attributeName);
 
             if (value > 0)
             {
-                unitOfMeasure = new UnitOfMeasure
+                unitOfMeasure = new T
                 {
+                    
                     Value = value,
                     Type = string.IsNullOrWhiteSpace(type)
                                ? "Total"
@@ -410,6 +426,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             }
 
             return unitOfMeasure;
+        }
+
+        internal static UnitOfMeasure UnitOfMeasureOrDefault(this XElement xElement,
+                                                             string elementName,
+                                                             string attributeName)
+        {
+            return xElement.UnitOfMeasureOrDefault<UnitOfMeasure>(elementName, attributeName);
         }
 
         internal static XElement StripNameSpaces(this XElement root)

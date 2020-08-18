@@ -20,7 +20,7 @@ This library is where all the magic happens :)</Description>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Core" Version="20.0.0-dev" />
+    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Core" Version="21.0.0-dev" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1618,7 +1618,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 return;
             }
 
-
             var details = new LandDetails
             {
                 Area = landDetailsElement.UnitOfMeasureOrDefault("area", "unit"),
@@ -1626,15 +1625,10 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 Sides = new List<Side>()
             };
 
-            var frontage = landDetailsElement.UnitOfMeasureOrDefault("frontage", "unit");
+            var frontage = landDetailsElement.SideOrDefault("frontage", "unit");
             if (frontage != null)
             {
-                var frontageSide = new Side
-                {
-                    Name = "frontage",
-                    Length = frontage
-                };
-                details.Sides.Add(frontageSide);
+               details.Sides.Add(frontage);
             }
 
             var depthElements = landDetailsElement.Elements("depth").ToArray();
@@ -1651,11 +1645,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                         var side = new Side
                         {
                             Name = depthSide,
-                            Length = new UnitOfMeasure
-                            {
-                                Type = depthType,
-                                Value = depthValue
-                            },
+                            Type = depthType,
+                            Value = depthValue
                         };
 
                         details.Sides.Add(side);

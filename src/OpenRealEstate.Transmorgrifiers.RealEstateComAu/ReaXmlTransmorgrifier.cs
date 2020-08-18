@@ -238,7 +238,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 {
                     Listing = listing,
                     SourceData = element.ToString(),
-                    Warnings = warnings.Any() ? warnings : null
+                    Warnings = warnings
                 });
             }
             catch (ParsingException exception)

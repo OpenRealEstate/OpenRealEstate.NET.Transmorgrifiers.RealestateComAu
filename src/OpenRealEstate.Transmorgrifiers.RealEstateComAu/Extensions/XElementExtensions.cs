@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using OpenRealEstate.Core;
 
@@ -84,7 +85,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             var value = !string.IsNullOrWhiteSpace(attributeName) &&
                         string.IsNullOrWhiteSpace(attributeValue)
                             ? AttributeValueOrDefault(element, attributeName)
-                            : element.Value.Trim();
+                            : element.ShallowValue().Trim();
 
             return string.IsNullOrWhiteSpace(value)
                        ? null
@@ -151,6 +152,20 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             setValue(string.IsNullOrWhiteSpace(value)
                          ? null
                          : value);
+        }
+
+        // NOTE: xElement.Value returns the text for itself (node) and all children nodes (!!!!!!!!!!)
+        //       Insane. But ok. So we need to return only the NODE text (excluding children).
+        //       This is called a SHALLOW value.
+        //       REF: https://docs.microsoft.com/en-us/dotnet/standard/linq/retrieve-shallow-value-element
+        internal static string ShallowValue(this XElement xElement)
+        {
+            return xElement
+                   .Nodes()
+                   .OfType<XText>()
+                   .Aggregate(new StringBuilder(),
+                              (s, c) => s.Append(c),
+                              s => s.ToString());
         }
 
         internal static string AttributeValue(this XElement xElement,

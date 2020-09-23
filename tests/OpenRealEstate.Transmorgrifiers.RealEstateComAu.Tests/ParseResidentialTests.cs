@@ -12,7 +12,6 @@ using OpenRealEstate.Transmorgrifiers.Core;
 using OpenRealEstate.Transmorgrifiers.Json;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 {
@@ -112,6 +111,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [InlineData("REA-Residential-Current-WithAStreetNumberAndASingleSubNumber.xml")]
         [InlineData("REA-Residential-Current-WithA4PointZeroZeroBedroomNumber.xml")]
         [InlineData("REA-Residential-Current-WithOptionalAuctionDateTimeText.xml")]
+        [InlineData("REA-Residential-Current-WithBuildingDetailsAreaHavingARange.xml")]
         public void GivenTheFileREAResidentialCurrent_Parse_ReturnsAResidentialAvailableListing(string fileName)
         {
             // Arrange.

@@ -160,12 +160,26 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
         //       REF: https://docs.microsoft.com/en-us/dotnet/standard/linq/retrieve-shallow-value-element
         internal static string ShallowValue(this XElement xElement)
         {
-            return xElement
-                   .Nodes()
-                   .OfType<XText>()
-                   .Aggregate(new StringBuilder(),
-                              (s, c) => s.Append(c),
-                              s => s.ToString());
+            var nodes = xElement.Nodes().OfType<XText>().ToList();
+            if (nodes?.Any() == true)
+            {
+                if (nodes.Count == 1)
+                {
+                    // No need to create a string builder.
+                    return nodes.First().Value;
+                }
+
+                // Yep, multiple values so we'll create a single string out of all of em.
+                var aggregateValues = new StringBuilder();
+                foreach(var node in nodes)
+                {
+                    aggregateValues.Append(node.Value);
+                }
+
+                return aggregateValues.ToString();
+            }
+
+            return string.Empty;
         }
 
         internal static string AttributeValue(this XElement xElement,

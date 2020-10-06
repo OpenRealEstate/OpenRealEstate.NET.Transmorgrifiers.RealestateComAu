@@ -93,6 +93,9 @@
     <None Update="Sample Data\Rental\REA-Segment-Rental-Current.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Sample Data\Residential\REA-Residential-Current.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Sample Data\Residential\REA-Residential-Current-WithBuildingDetailsAreaHavingARange.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -195,7 +198,7 @@
     <None Update="Sample Data\Residential\REA-Residential-Current-WithAuctionDateTimePlaceholder.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Sample Data\Residential\REA-Residential-Current.xml">
+    <None Update="Sample Data\Residential\REA-Residential-Current-WithCData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample Data\Residential\REA-Residential-Deleted.xml">

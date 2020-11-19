@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE propertyList SYSTEM "http://reaxml.realestate.com.au/propertyList.dtd">
+<propertyList date="2009-01-01-12:30:00" username="xmluser" password="xmlpassword">
+    <rental modTime="2019-12-23T15:55:44" status="current">
+        <agentID>AAAAAA</agentID>
+        <uniqueID>Rental-Current-ABCD1234</uniqueID>
+        <listingAgent id="1">
+            <name>Test Agent</name>
+            <email>some@email.com</email>
+        </listingAgent>
+        <dateAvailable>2019-12-09</dateAvailable>
+        <rent period="weekly">410</rent>
+        <priceView>$410 per week</priceView>
+        <address display="yes">
+            <site>FOO COURT</site>
+            <subNumber>5</subNumber>
+            <streetNumber>41</streetNumber>
+            <street>Bar Street</street>
+            <suburb>Foobar</suburb>
+            <state>ACT</state>
+            <postcode>2602</postcode>
+        </address>
+        <category name="Unit" />
+        <headline>&lt;b&gt;Best listing ever!&lt;/b&gt;</headline>
+        <description>This is a &lt;strong&gt;great&lt;/strong&gt; listing!</description>
+        <features>
+            <bedrooms>2</bedrooms>
+            <bathrooms>1</bathrooms>
+            <carports>1</carports>
+        </features>
+        <landDetails />
+        <buildingDetails />
+        <inspectionTimes>
+            <inspection>02-Jan-2020 11:45am to 12:00pm</inspection>
+        </inspectionTimes>
+        <images>
+            <img url="https://www.somewhere.com.au/1.jpg" id="m" modTime="2019-11-08-17:00:42" />
+            <img url="https://www.somewhere.com.au/2.jpg" id="a" modTime="2019-11-08-17:00:42" />
+            <img url="https://www.somewhere.com.au/3.jpg" id="b" modTime="2019-11-08-17:00:42" />
+            <img url="https://www.somewhere.com.au/4.jpg" id="c" modTime="2019-11-08-17:00:42" />
+        </images>
+    </rental>
+</propertyList>

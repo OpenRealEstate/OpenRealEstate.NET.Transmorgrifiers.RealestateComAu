@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using OpenRealEstate.Core.Filters;
 using OpenRealEstate.Core.Rental;
 using OpenRealEstate.Core.Residential;
@@ -114,6 +115,35 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                                                     .SingleOrDefault();
             residentialCurrentListing.ShouldNotBeNull();
 
+            result.Errors.Count.ShouldBe(0);
+            result.UnhandledData.Count.ShouldBe(0);
+        }
+
+        [Fact]
+        public void GivenTheFileREAHTmlInTitleAndDesc_Parse_ReturnsAListOfListingsWithHTMLRemovedFromTitleAndDescription()
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText("Sample Data/REA-HTMLInTitleAndDesc.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            var cleanedUpTitle = "Best listing ever!";
+            var cleanedUpDescription = "This is a great listing!";
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            result.Listings.Count.ShouldBe(1);
+
+            var rentalCurrentListing = result.Listings
+                                             .Select(x => x.Listing)
+                                             .AsQueryable()
+                                             .WithId("Rental-Current-ABCD1234")
+                                             .OfType<RentalListing>()
+                                             .SingleOrDefault();
+            rentalCurrentListing.ShouldNotBeNull();
+            rentalCurrentListing.Title.ShouldBe(cleanedUpTitle);
+            rentalCurrentListing.Description.ShouldBe(cleanedUpDescription);
             result.Errors.Count.ShouldBe(0);
             result.UnhandledData.Count.ShouldBe(0);
         }

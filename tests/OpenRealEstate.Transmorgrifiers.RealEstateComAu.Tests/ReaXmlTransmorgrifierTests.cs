@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using OpenRealEstate.Core.Filters;
 using OpenRealEstate.Core.Rental;
 using OpenRealEstate.Core.Residential;
@@ -120,17 +121,25 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("&lt;b&gt;Best listing ever!&lt;/b&gt;", "&lt;b&gt;This is a great listing!&lt;/b&gt;", "Best listing ever!", "This is a great listing!")] // Simple bold tags, removed.
-        [InlineData("The price of apples are &lt; the price of &lt;b&gt;oranges&lt;/b&gt;", "Hi Hi", "The price of apples are < the price of oranges", "Hi Hi")] // Random < symbol in title remains. No html in description.
+        [InlineData("<b>Best listing ever!</b>", "<b>This is a great listing!</b>", "Best listing ever!", "This is a great listing!")] // Simple bold tags, removed.
+        [InlineData("The price of apples are < the price of <b>oranges</b>", "Hi Hi", "The price of apples are < the price of oranges", "Hi Hi")] // Random < symbol in title remains. No html in description.
+        [InlineData("How are things < today? Are they ok? > > > yo yo yo", "hi", "How are things < today? Are they ok? > > > yo yo yo", "hi")]
         public void GivenTheFileREAHtmlInTitleAndDesc_Parse_ReturnsAListOfListingsWithHTMLRemovedFromTitleAndDescription(string title,
                                                                                                                          string description,
                                                                                                                          string titleOut,
                                                                                                                          string descriptionOut)
         {
+            static string ToXmlEncodedString(string text)
+            {
+                return new XElement("t", text).LastNode.ToString();
+            }
+
             // Arrange.
+            var xmlEncodedTitle = ToXmlEncodedString(title);
+            var xmlEncodedDescription = ToXmlEncodedString(description);
             var reaXml = File.ReadAllText("Sample Data/Residential/REA-Residential-Current-WithHeadlineAndDescriptionPlaceholders.xml");            
-            var updatedXml = reaXml.Replace("REPLACE-THIS-TITLE", title)
-                                   .Replace("REPLACE-THIS-DESCRIPTION", description);
+            var updatedXml = reaXml.Replace("REPLACE-THIS-TITLE", xmlEncodedTitle)
+                                   .Replace("REPLACE-THIS-DESCRIPTION", xmlEncodedDescription);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             // Act.

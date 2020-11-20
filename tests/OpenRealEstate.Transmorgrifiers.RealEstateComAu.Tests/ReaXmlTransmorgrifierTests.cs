@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using OpenRealEstate.Core.Filters;
 using OpenRealEstate.Core.Rental;
 using OpenRealEstate.Core.Residential;
@@ -114,6 +115,39 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                                                     .SingleOrDefault();
             residentialCurrentListing.ShouldNotBeNull();
 
+            result.Errors.Count.ShouldBe(0);
+            result.UnhandledData.Count.ShouldBe(0);
+        }
+
+        [Theory]
+        [InlineData("&lt;b&gt;Best listing ever!&lt;/b&gt;", "&lt;b&gt;This is a great listing!&lt;/b&gt;", "Best listing ever!", "This is a great listing!")] // Simple bold tags, removed.
+        [InlineData("The price of apples are &lt; the price of &lt;b&gt;oranges&lt;/b&gt;", "Hi Hi", "The price of apples are < the price of oranges", "Hi Hi")] // Random < symbol in title remains. No html in description.
+        public void GivenTheFileREAHtmlInTitleAndDesc_Parse_ReturnsAListOfListingsWithHTMLRemovedFromTitleAndDescription(string title,
+                                                                                                                         string description,
+                                                                                                                         string titleOut,
+                                                                                                                         string descriptionOut)
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText("Sample Data/Residential/REA-Residential-Current-WithHeadlineAndDescriptionPlaceholders.xml");            
+            var updatedXml = reaXml.Replace("REPLACE-THIS-TITLE", title)
+                                   .Replace("REPLACE-THIS-DESCRIPTION", description);
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(updatedXml);
+
+            // Assert.
+            result.Listings.Count.ShouldBe(1);
+
+            var residentialCurrentListing = result.Listings
+                                                  .Select(x => x.Listing)
+                                                  .AsQueryable()
+                                                  .WithId("Residential-Current-ABCD1234")
+                                                  .OfType<ResidentialListing>()
+                                                  .SingleOrDefault();
+            residentialCurrentListing.ShouldNotBeNull();
+            residentialCurrentListing.Title.ShouldBe(titleOut);
+            residentialCurrentListing.Description.ShouldBe(descriptionOut);
             result.Errors.Count.ShouldBe(0);
             result.UnhandledData.Count.ShouldBe(0);
         }

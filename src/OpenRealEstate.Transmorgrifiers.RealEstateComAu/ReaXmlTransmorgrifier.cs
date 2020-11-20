@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -21,6 +22,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     public class ReaXmlTransmorgrifier : ITransmorgrifier
     {
+        private static readonly Regex _removeHtmlRegex = new Regex("<[a-zA-Z/].*?>", RegexOptions.Compiled);
+
         private static readonly IList<string> ValidRootNodes = new List<string>
         {
             "propertyList",
@@ -591,8 +594,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 listing.StatusType = statusType;
             }
 
-            document.ValueOrDefaultIfExists(title => listing.Title = title, "headline");
-            document.ValueOrDefaultIfExists(description => listing.Description = description, "description");
+            // Headline & Description should have HTML removed. ref: https://partner.realestate.com.au/documentation/api/listings/elements
+            document.ValueOrDefaultIfExists(title => listing.Title = _removeHtmlRegex.Replace(title, string.Empty), "headline");
+            document.ValueOrDefaultIfExists(description => listing.Description = _removeHtmlRegex.Replace(description, string.Empty), "description");
 
             ExtractAddress(document, listing, addressDelimeter);
             ExtractAgents(document, listing);

@@ -22,7 +22,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     public class ReaXmlTransmorgrifier : ITransmorgrifier
     {
-        private static readonly Regex _removeHtmlRegex = new Regex("<[^>]*>", RegexOptions.Compiled);
+        private static readonly Regex _removeHtmlRegex = new Regex("<[a-zA-Z/].*?>", RegexOptions.Compiled);
 
         private static readonly IList<string> ValidRootNodes = new List<string>
         {

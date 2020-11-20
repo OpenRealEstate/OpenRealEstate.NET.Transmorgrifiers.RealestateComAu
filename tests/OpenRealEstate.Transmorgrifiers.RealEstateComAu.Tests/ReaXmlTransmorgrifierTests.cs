@@ -119,31 +119,35 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             result.UnhandledData.Count.ShouldBe(0);
         }
 
-        [Fact]
-        public void GivenTheFileREAHTmlInTitleAndDesc_Parse_ReturnsAListOfListingsWithHTMLRemovedFromTitleAndDescription()
+        [Theory]
+        [InlineData("&lt;b&gt;Best listing ever!&lt;/b&gt;", "&lt;b&gt;This is a great listing!&lt;/b&gt;", "Best listing ever!", "This is a great listing!")] // Simple bold tags, removed.
+        [InlineData("The price of apples are &lt; the price of &lt;b&gt;oranges&lt;/b&gt;", "Hi Hi", "The price of apples are < the price of oranges", "Hi Hi")] // Random < symbol in title remains. No html in description.
+        public void GivenTheFileREAHtmlInTitleAndDesc_Parse_ReturnsAListOfListingsWithHTMLRemovedFromTitleAndDescription(string title,
+                                                                                                                         string description,
+                                                                                                                         string titleOut,
+                                                                                                                         string descriptionOut)
         {
             // Arrange.
-            var reaXml = File.ReadAllText("Sample Data/REA-HTMLInTitleAndDesc.xml");
+            var reaXml = File.ReadAllText("Sample Data/Residential/REA-Residential-Current-WithHeadlineAndDescriptionPlaceholders.xml");            
+            var updatedXml = reaXml.Replace("REPLACE-THIS-TITLE", title)
+                                   .Replace("REPLACE-THIS-DESCRIPTION", description);
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
-            var cleanedUpTitle = "Best listing ever!";
-            var cleanedUpDescription = "This is a great listing!";
-
             // Act.
-            var result = reaXmlTransmorgrifier.Parse(reaXml);
+            var result = reaXmlTransmorgrifier.Parse(updatedXml);
 
             // Assert.
             result.Listings.Count.ShouldBe(1);
 
-            var rentalCurrentListing = result.Listings
-                                             .Select(x => x.Listing)
-                                             .AsQueryable()
-                                             .WithId("Rental-Current-ABCD1234")
-                                             .OfType<RentalListing>()
-                                             .SingleOrDefault();
-            rentalCurrentListing.ShouldNotBeNull();
-            rentalCurrentListing.Title.ShouldBe(cleanedUpTitle);
-            rentalCurrentListing.Description.ShouldBe(cleanedUpDescription);
+            var residentialCurrentListing = result.Listings
+                                                  .Select(x => x.Listing)
+                                                  .AsQueryable()
+                                                  .WithId("Residential-Current-ABCD1234")
+                                                  .OfType<ResidentialListing>()
+                                                  .SingleOrDefault();
+            residentialCurrentListing.ShouldNotBeNull();
+            residentialCurrentListing.Title.ShouldBe(titleOut);
+            residentialCurrentListing.Description.ShouldBe(descriptionOut);
             result.Errors.Count.ShouldBe(0);
             result.UnhandledData.Count.ShouldBe(0);
         }

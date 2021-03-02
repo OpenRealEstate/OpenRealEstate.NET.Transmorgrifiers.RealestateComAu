@@ -288,16 +288,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [InlineData("T:18:30")] // '2016-10-01-9:30:00
         [InlineData("-0001-11-30 00:00:00")]
         [InlineData("2016-00-00")]
-        [InlineData("0000-00-00-00:00")]
-        [InlineData("0000-00-00")]
-        [InlineData("0000-00-00T00:00")]
         [InlineData("T:")]
         [InlineData("- - -0:00:00 ")]
         public void GivenTheFileREAResidentialCurrentWithBadAuctionDateTime_Convert_RetrunsSomeInvalidData(string bustedDateTime)
         {
             // Arrange.
-            var reaXml =
-                File.ReadAllText("Sample Data/Residential/REA-Residential-Current-WithAuctionDateTimePlaceholder.xml");
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithAuctionDateTimePlaceholder.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             var updatedXml = reaXml.Replace("REPLACE-THIS-VALUE", bustedDateTime);
@@ -312,6 +308,46 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             result.Errors.Count.ShouldBe(1);
             result.Errors.First().AgencyId.ShouldBe("XNWXNW");
             result.Errors.First().ListingId.ShouldBe("Residential-Current-ABCD1234");
+        }
+
+        [Theory]
+        [InlineData("0000-00-00")]
+        [InlineData("0000-00-00-00:00")]
+        [InlineData("0000-00-00T00:00")]
+        [InlineData("0000-00-00-00:00:00")]
+        [InlineData("0000-00-00T00:00:00")]
+        public void GivenAFileWithMinimumDates_Parse_ReturnsAResidentialAvailableListingWithDatesRemoved(string minimumDateTime)
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithAuctionDateTimePlaceholder.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            var updatedXml = reaXml.Replace("REPLACE-THIS-VALUE", minimumDateTime);
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(updatedXml);
+
+            // Assert.
+            var listing = result.Listings.First().Listing as ResidentialListing;
+            listing.AuctionOn.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenAFileWithAModTimeMinimumDate_Parse_RetrunsSomeInvalidData()
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            var updatedXml = reaXml.Replace("modTime=\"2009-01-01-12:30:00\"", "modTime=\"0000-00-00\"");
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(updatedXml);
+
+            // Assert.
+            result.Listings.ShouldBeEmpty();
+            result.Errors.ShouldNotBeNull();
+            result.Errors.Count.ShouldBe(1);
         }
 
         [Theory]

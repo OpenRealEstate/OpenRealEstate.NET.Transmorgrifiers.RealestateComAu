@@ -48,6 +48,57 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             '-'
         };
 
+        // REFERENCE: http://reaxml.realestate.com.au/docs/reaxml1-xml-format.html#datetime
+        /*
+            YYYY-MM-DD
+            YYYY-MM-DD-hh:mm
+            YYYY-MM-DD-hh:mm:ss
+            YYYY-MM-DDThh:mm
+            YYYY-MM-DDThh:mm:ss
+            YYYYMMDD
+            YYYYMMDD-hhmm
+            YYYYMMDD-hhmmss
+            YYYYMMDDThhmm
+            YYYYMMDDThhmmss
+
+        // FFS REA!!!! URGH!!!!!!!! :( 
+        // Stick to fricking ISO8061 with yyyy-MM-ddTHH:mm:ss 
+        // ONE FORMAT TO RULE THEM ALL.
+        // (not that hard, peeps).
+        */
+        private static readonly string[] READateTimeformats = new[]
+        {
+            "yyyy-MM-dd",
+            "yyyy-MM-dd-HH:mm",
+            "yyyy-MM-ddTHH:mm",
+            "yyyy-MM-dd-HH:mm:",
+            "yyyy-MM-dd-HH:mm:ss",
+            "yyyy-MM-ddTHH:mm:ss",
+            "yyyy-MM-ddTH:mm:ss", // 2016-05-21T9:33:49 (Notice the single 'hour' that is not 24 hour format?)
+            "yyyy-MM-dd-H:mm:ss", // 2016-05-26-9:41:29 (Another back hack from people. Single hour. GRR!)
+            "yyyy-MM-dd-HH:mm:ss", // 2016-05-26-16:41:29 (Another back hack from people. 24 hour. GRR!)
+            "yyyy-MM-dd-HH:mm:sstt", // 2015-12-15-01:18:52PM
+            "yyyy-MM-dd-h:mm:ss", // Urgh :( 2016-10-05-0:00:00 (Notice the single 'hour' that is not 24 hour format?)
+            "yyyyMMdd-HHmmss",
+            "yyyyMMDD-HHmmss",
+            "yyyyMMddTHHmmss",
+            "yyyyMMDDTHHmm",
+            "yyyyMMdd-HHmm",
+            "yyyyMMddTHHmm",
+            "yyyyMMdd",
+            "o",
+            "s"
+        };
+
+        private static readonly string[] REAMinimumDateTimeValues = new[]
+        {
+            "0000-00-00",
+            "0000-00-00-00:00",
+            "0000-00-00T00:00",
+            "0000-00-00-00:00:00",
+            "0000-00-00T00:00:00"
+        };
+
         private CultureInfo _defaultCultureInfo;
 
         public CultureInfo DefaultCultureInfo
@@ -487,67 +538,33 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             return listing;
         }
 
-        private static DateTime ToDateTime(string reaDateTime,
-                                           string elementName = null)
+        // NOTE: if the date is 0000-00-00 (etc) then we return null
+        private static DateTime? ToDateTime(string reaDateTime,
+                                            string elementName = null)
         {
             Guard.AgainstNullOrWhiteSpace(reaDateTime);
-
-            // REFERENCE: http://reaxml.realestate.com.au/docs/reaxml1-xml-format.html#datetime
-            /*
-                YYYY-MM-DD
-                YYYY-MM-DD-hh:mm
-                YYYY-MM-DD-hh:mm:ss
-                YYYY-MM-DDThh:mm
-                YYYY-MM-DDThh:mm:ss
-                YYYYMMDD
-                YYYYMMDD-hhmm
-                YYYYMMDD-hhmmss
-                YYYYMMDDThhmm
-                YYYYMMDDThhmmss
-
-            // FFS REA!!!! URGH!!!!!!!! :( 
-            // Stick to fricking ISO8061 with yyyy-MM-ddTHH:mm:ss 
-            // ONE FORMAT TO RULE THEM ALL.
-            // (not that hard, peeps).
-            */
-            var formats = new[]
-            {
-                "yyyy-MM-dd",
-                "yyyy-MM-dd-HH:mm",
-                "yyyy-MM-ddTHH:mm",
-                "yyyy-MM-dd-HH:mm:",
-                "yyyy-MM-dd-HH:mm:ss",
-                "yyyy-MM-ddTHH:mm:ss",
-                "yyyy-MM-ddTH:mm:ss", // 2016-05-21T9:33:49 (Notice the single 'hour' that is not 24 hour format?)
-                "yyyy-MM-dd-H:mm:ss", // 2016-05-26-9:41:29 (Another back hack from people. Single hour. GRR!)
-                "yyyy-MM-dd-HH:mm:ss", // 2016-05-26-16:41:29 (Another back hack from people. 24 hour. GRR!)
-                "yyyy-MM-dd-HH:mm:sstt", // 2015-12-15-01:18:52PM
-                "yyyy-MM-dd-h:mm:ss", // Urgh :( 2016-10-05-0:00:00 (Notice the single 'hour' that is not 24 hour format?)
-                "yyyyMMdd-HHmmss",
-                "yyyyMMDD-HHmmss",
-                "yyyyMMddTHHmmss",
-                "yyyyMMDDTHHmm",
-                "yyyyMMdd-HHmm",
-                "yyyyMMddTHHmm",
-                "yyyyMMdd",
-                "o",
-                "s"
-            };
 
             var trimmedValue = reaDateTime.Trim();
 
             if (DateTime.TryParseExact(trimmedValue,
-                                       formats,
+                                       READateTimeformats,
                                        CultureInfo.InvariantCulture,
                                        DateTimeStyles.None,
                                        out var result))
             {
-                return result;
+                return result == DateTime.MinValue ? null : (DateTime?)result;
             }
 
             if (DateTime.TryParse(trimmedValue, out result))
             {
-                return result;
+                return result == DateTime.MinValue ? null : (DateTime?)result;
+            }
+
+            // Manual 💩 crappy test to see if this is a minimal value.
+            if (REAMinimumDateTimeValues.Contains(trimmedValue))
+            {
+                // Yep - we have one of this 💩 values 😢
+                return null;
             }
 
             var errorMessage =
@@ -574,7 +591,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
             Guard.AgainstNull(warnings);
 
-            listing.UpdatedOn = ToDateTime(document.AttributeValue("modTime"), "<root modTime>");
+            var modTime = ToDateTime(document.AttributeValue("modTime"), "<root modTime>");
+            if (modTime is null)
+            {
+                throw new Exception("modTime is not allowed to be 0000-00-00. We need to have a valid modTime.");
+            }
+            listing.UpdatedOn = modTime.Value;
 
             // We have no idea if this was created before this date, but we need to set a date
             // so we'll default it to this.

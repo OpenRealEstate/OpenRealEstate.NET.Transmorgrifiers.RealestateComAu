@@ -332,7 +332,54 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             listing.AuctionOn.ShouldBeNull();
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+
+        public void GivenAnExistingFileWithAMinimumDate_Parse_ReturnsAResidentialAvailableListingWithDatesRemoved(bool useAnExistingListing)
+        {
+            // Arrange.
+            var file = FakeDataFolder + "REA-Residential-Current-WithAuctionDateTimePlaceholder.xml";
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+            ResidentialListing existingListing = null;
+
+            if (useAnExistingListing)
+            {
+                var existingListingXml = File.ReadAllText(file);
+                existingListingXml = existingListingXml.Replace("REPLACE-THIS-VALUE", DateTime.UtcNow.ToString("s"));
+                existingListing = reaXmlTransmorgrifier
+                    .Parse(existingListingXml)
+                    .Listings
+                    .First()
+                    .Listing as ResidentialListing;
+            }
+
+            var reaXml = File.ReadAllText(file);
+            var updatedXml = reaXml.Replace("REPLACE-THIS-VALUE", "0000-00-00");
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(updatedXml, existingListing);
+
+            // Assert.
+            result.Listings.ShouldNotBeEmpty();
+            result.Listings.Count.ShouldBe(1);
+            result.Errors.ShouldBeEmpty();
+
+            var listing = result
+                .Listings
+                .First()
+                .Listing as ResidentialListing;
+
+            listing.AuctionOn.ShouldBeNull();
+
+            if (useAnExistingListing)
+            {
+                listing.AuctionOn.ShouldNotBe(existingListing.AuctionOn); // Existing had a value. Now it's been removed.
+            }
+        }
+
         [Fact]
+
         public void GivenAFileWithAModTimeMinimumDate_Parse_RetrunsSomeInvalidData()
         {
             // Arrange.
@@ -439,12 +486,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             AssertResidentialListing(result, expectedListing);
         }
 
+        // TODO: This should now remove/set most of the existing values because REA doesn't accept
+        //       "partial" files any more
+        // REF: https://partner.realestate.com.au/documentation/api/listings/specifications/#requirements-to-update-a-listing
         [Fact]
         public void GivenTheFileREAResidentialCurrentMinimumAndAnExistingListing_Parse_ReturnsAResidentialAvailableListing()
         {
             // Arrange.
             var source = FakeListings.CreateAFakeResidentialListing();
             var destination = FakeListings.CreateAFakeResidentialListing();
+            destination.AuctionOn = null;
+            destination.Pricing.SoldOn = null;
 
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-Minimum.xml");

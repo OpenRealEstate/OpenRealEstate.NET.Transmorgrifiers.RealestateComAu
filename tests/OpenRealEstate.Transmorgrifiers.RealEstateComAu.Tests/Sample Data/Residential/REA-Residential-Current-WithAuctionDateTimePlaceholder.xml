@@ -7,7 +7,7 @@
         <agentID>XNWXNW</agentID>
         <uniqueID>Residential-Current-ABCD1234</uniqueID>
         <authority value="auction" />
-        <auction>REPLACE-THIS-VALUE</auction>
+        <auction date="REPLACE-THIS-VALUE" />
         <underOffer value="no" />
         <councilRates>$2000 per month</councilRates>
         <isHomeLandPackage value="yes"></isHomeLandPackage>

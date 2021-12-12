@@ -1,21 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="1.2.1">
+    <PackageReference Include="coverlet.collector" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="OpenRealEstate.Testing" Version="17.0.0-dev" />
-    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="22.0.0-dev" />
-    <PackageReference Include="OpenRealEstate.Validation" Version="32.0.0-dev" />
-    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="OpenRealEstate.Testing" Version="103.0.0-beta" />
+    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="101.0.0-beta" />
+    <PackageReference Include="OpenRealEstate.Validation" Version="105.0.0-beta" />
+    <PackageReference Include="Shouldly" Version="4.0.3" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

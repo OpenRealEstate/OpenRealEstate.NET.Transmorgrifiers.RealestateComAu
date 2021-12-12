@@ -22,7 +22,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     public class ReaXmlTransmorgrifier : ITransmorgrifier
     {
-        private static readonly Regex _removeHtmlRegex = new Regex("<[a-zA-Z/].*?>", RegexOptions.Compiled);
+        private static readonly Regex RemoveHtmlRegex = new Regex("<[a-zA-Z/].*?>", RegexOptions.Compiled);
 
         private static readonly IList<string> ValidRootNodes = new List<string>
         {
@@ -617,8 +617,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             }
 
             // Headline & Description should have HTML removed. ref: https://partner.realestate.com.au/documentation/api/listings/elements
-            document.ValueOrDefaultIfExists(title => listing.Title = _removeHtmlRegex.Replace(title, string.Empty), "headline");
-            document.ValueOrDefaultIfExists(description => listing.Description = _removeHtmlRegex.Replace(description, string.Empty), "description");
+            document.ValueOrDefaultIfExists(title => listing.Title = RemoveHtmlRegex.Replace(title, string.Empty), "headline");
+            document.ValueOrDefaultIfExists(description => listing.Description = RemoveHtmlRegex.Replace(description, string.Empty), "description");
 
             ExtractAddress(document, listing, addressDelimeter);
             ExtractAgents(document, listing);
@@ -1222,7 +1222,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                                                    Func<string, int> orderConverstionFunction,
                                                                    string elementName = null)
         {
-            int counter = 1;
+            var counter = 1;
+
             // Note 1: Image 'urls' can either be via a Uri (yay!) or
             //         a file name because the xml was provided in a zip file with
             //         the images (booooo! hiss!!!)
@@ -1536,7 +1537,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
             Guard.AgainstNull(salePricing);
 
-            salePricing.SoldPrice = document.NullableDecimalValueOrDefault();
+            var soldPrice = document.NullableDecimalValueOrDefault();
+            
+            // NOTE: We get lots of 'sold price == 0' ... so in these cases, we make it 'null'.
+            salePricing.SoldPrice = soldPrice <= 0
+                ? null
+                : soldPrice;
 
             /*
                NOTE 1: No display price assumes a 'YES' and that the price -is- to be displayed.

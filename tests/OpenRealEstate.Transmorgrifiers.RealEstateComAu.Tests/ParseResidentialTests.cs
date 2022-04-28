@@ -113,6 +113,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [InlineData("REA-Residential-Current-WithOptionalAuctionDateTimeText.xml")]
         [InlineData("REA-Residential-Current-WithBuildingDetailsAreaHavingARange.xml")]
         [InlineData("REA-Residential-Current-WithCData.xml")]
+        [InlineData("REA-Residential-Current-WithNoAttachmentContentType.xml")]
         public void GivenTheFileREAResidentialCurrent_Parse_ReturnsAResidentialAvailableListing(string fileName)
         {
             // Arrange.

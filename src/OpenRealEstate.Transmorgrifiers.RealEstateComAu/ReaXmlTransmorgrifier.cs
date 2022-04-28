@@ -99,9 +99,11 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             "0000-00-00T00:00:00"
         };
 
+
+        private const string AttachmentTagStatementOfInformation = "statementOfInformation";
         private static readonly string[] ValidAttachmentTags = new[]
         {
-            "statementOfInformation",
+            AttachmentTagStatementOfInformation,
             "agentPhoto" // Not used by OpenRealEstate
         };
 
@@ -1354,8 +1356,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             // - only statementOfInformation's. Not handling agentPhoto's.
 
             listing.Documents = documents.Where(x => !invalidTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase) &&
-                                                     (string.IsNullOrWhiteSpace(x.ContentType) || 
-                                                      x.ContentType.Equals(AttachmentContentTypeApplicationPdf, StringComparison.OrdinalIgnoreCase)))
+                                                     !invalidContentTypes.Contains(x.ContentType, StringComparer.OrdinalIgnoreCase) &&
+                                                     x.Tag.Equals(AttachmentTagStatementOfInformation, StringComparison.OrdinalIgnoreCase))
                                          .ToList();
         }
 

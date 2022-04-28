@@ -24,7 +24,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
     {
         private static readonly Regex RemoveHtmlRegex = new Regex("<[a-zA-Z/].*?>", RegexOptions.Compiled);
 
-        private static readonly IList<string> ValidRootNodes = new List<string>
+        private static readonly string[] ValidRootNodes = new string[]
         {
             "propertyList",
             "residential",
@@ -98,6 +98,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             "0000-00-00-00:00:00",
             "0000-00-00T00:00:00"
         };
+
+
+        private const string AttachmentTagStatementOfInformation = "statementOfInformation";
+        private static readonly string[] ValidAttachmentTags = new[]
+        {
+            AttachmentTagStatementOfInformation,
+            "agentPhoto" // Not used by OpenRealEstate
+        };
+
+        private const string AttachmentContentTypeApplicationPdf = "application/pdf";
+        private static readonly string[] ValidAttachmentContentTypes = new[] { AttachmentContentTypeApplicationPdf };
 
         private CultureInfo _defaultCultureInfo;
 
@@ -1299,45 +1310,54 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             {
                 return;
             }
-
-            const string validTag = "StatementOfInformation";
-            const string validContentType = "application/pdf";
+            
 
             // Notes: Will only extract documents that:
-            // 1 - Are a 'Statement Of Information'
-            // 2 - First SoI document.
+            // 1 - Are a 'Statement Of Information'. We ignore 'Agent Photos'.
+            // 2 - First SoI document (if there are multiple).
+            // 3 - If no ContentType was provided, then we force it to application/pdf.
             var documents = mediaElement.Elements("attachment")
                                         .Select((e,
-                                                order) => new Media
-                                                {
-                                                    CreatedOn = DateTime.UtcNow,
-                                                    Id = e.AttributeValueOrDefault("id"),
-                                                    Tag = e.AttributeValueOrDefault("usage"),
-                                                    Url = e.AttributeValueOrDefault("url"),
-                                                    ContentType = e.AttributeValueOrDefault("contentType"),
-                                                    Order = ++order
-                                                })
+                                                 order) => new Media
+                                                 {
+                                                     CreatedOn = DateTime.UtcNow,
+                                                     Id = e.AttributeValueOrDefault("id"),
+                                                     Tag = e.AttributeValueOrDefault("usage"),
+                                                     Url = e.AttributeValueOrDefault("url"),
+                                                     ContentType = string.IsNullOrWhiteSpace(e.AttributeValueOrDefault("contentType")) // ContentType is now optional!
+                                                        ? AttachmentContentTypeApplicationPdf
+                                                        : e.AttributeValueOrDefault("contentType"), 
+                                                     Order = ++order
+                                                 })
                                         .OrderBy(x => x.Order)
                                         .ToList();
 
-            var invalidTags = documents.Where(x => !x.Tag.Equals(validTag, StringComparison.OrdinalIgnoreCase))
-                                       .Select(x => x.Tag);
+            var invalidTags = documents.Where(x => !string.IsNullOrWhiteSpace(x.Tag))
+                                       .Select(x => x.Tag)
+                                       .Except(ValidAttachmentTags, StringComparer.OrdinalIgnoreCase);
+
             if (invalidTags.Any())
             {
                 var errorMessage = $"At least 1 document has an invalid 'usage' value. Invalid values: {string.Join(", ", invalidTags)}";
                 warnings.Add(errorMessage);
             }
 
-            var invalidContentTypes = documents.Where(x => !x.ContentType.Equals(validContentType, StringComparison.OrdinalIgnoreCase))
-                                               .Select(x => x.ContentType);
+            var invalidContentTypes = documents.Where(x => !string.IsNullOrWhiteSpace(x.ContentType))
+                                               .Select(x => x.ContentType)
+                                               .Except(ValidAttachmentContentTypes, StringComparer.OrdinalIgnoreCase);
             if (invalidContentTypes.Any())
             {
                 var errorMessage = $"At least 1 document has an invalid 'contentType' value. Invalid values: {string.Join(", ", invalidContentTypes)}";
                 warnings.Add(errorMessage);
             }
 
-            listing.Documents = documents.Where(x => x.Tag.Equals(validTag, StringComparison.OrdinalIgnoreCase) &&
-                                                     x.ContentType.Equals(validContentType, StringComparison.OrdinalIgnoreCase))
+            // We only want documents that
+            // - are legit (no warnings, from above)
+            // - only statementOfInformation's. Not handling agentPhoto's.
+
+            listing.Documents = documents.Where(x => !invalidTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase) &&
+                                                     !invalidContentTypes.Contains(x.ContentType, StringComparer.OrdinalIgnoreCase) &&
+                                                     x.Tag.Equals(AttachmentTagStatementOfInformation, StringComparison.OrdinalIgnoreCase))
                                          .ToList();
         }
 

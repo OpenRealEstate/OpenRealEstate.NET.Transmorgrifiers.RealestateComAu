@@ -5,17 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="3.1.0">
+    <PackageReference Include="coverlet.collector" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="OpenRealEstate.Testing" Version="103.0.0-beta" />
-    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="101.0.0-beta" />
-    <PackageReference Include="OpenRealEstate.Validation" Version="105.0.0-beta" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="OpenRealEstate.Testing" Version="104.0.0-beta" />
+    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="104.0.0-beta" />
+    <PackageReference Include="OpenRealEstate.Validation" Version="110.0.0-beta" />
     <PackageReference Include="Shouldly" Version="4.0.3" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -67,6 +67,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample Data\REA-MixedContent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample Data\Rental\REA-Rental-Current-WithPriceView.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample Data\Rental\REA-Rental-Current-WithFrequency.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample Data\Rental\REA-Rental-Current-WithNoBond.xml">

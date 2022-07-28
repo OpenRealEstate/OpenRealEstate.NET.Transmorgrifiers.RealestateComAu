@@ -1418,9 +1418,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
             Guard.AgainstNull(salePricing);
 
-            document.MoneyValueOrDefaultIfExists(salePrice => salePricing.SalePrice = salePrice,
-                                                 cultureInfo,
-                                                 "price");
+            salePricing.SalePrice = document.IntValueOrDefault("price");
 
             // ### MASSIVE NOTICE ###
             // This is where shit gets real. :/
@@ -1557,12 +1555,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
             Guard.AgainstNull(salePricing);
 
-            var soldPrice = document.NullableDecimalValueOrDefault();
+            var soldPrice = document.NullableIntValueOrDefault();
             
             // NOTE: We get lots of 'sold price == 0' ... so in these cases, we make it 'null'.
-            salePricing.SoldPrice = soldPrice <= 0
-                ? null
-                : soldPrice;
+            salePricing.SoldPrice = !soldPrice.HasValue ||
+                soldPrice <= 0
+                    ? null
+                    : soldPrice;
 
             /*
                NOTE 1: No display price assumes a 'YES' and that the price -is- to be displayed.
@@ -1938,7 +1937,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                     rentalPricing.PaymentFrequencyType = PaymentFrequencyType.Monthly;
                 }
 
-                rentalPricing.RentalPrice = rentElement.MoneyValueOrDefault(cultureInfo);
+                rentalPricing.RentalPrice = rentElement.IntValueOrDefault();
 
                 var displayAttributeValue = rentElement.AttributeValueOrDefault("display");
                 var isDisplay = string.IsNullOrWhiteSpace(displayAttributeValue) ||
@@ -1960,7 +1959,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 rentalPricing.RentalPriceText = priceView;
             }
 
-            rentalPricing.Bond = xElement.NullableMoneyValueOrDefault(cultureInfo, "bond");
+            rentalPricing.Bond = xElement.NullableIntValueOrDefault("bond");
 
             // Finally, lets use this rental pricing.
             listing.Pricing = rentalPricing;

@@ -15,6 +15,7 @@
         </listingAgent>
         <dateAvailable>2009-01-26-12:30:00</dateAvailable>
         <rent period="week">350</rent>
+        <priceView>Property must be rented!!</priceView>
         <newConstruction>true</newConstruction>
         <bond>999</bond>
         <address display="yes">

@@ -1,9 +1,13 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
 using OpenRealEstate.Core;
+
+
+[assembly: InternalsVisibleTo("OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests")]
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 {

@@ -13,33 +13,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
 {
     internal static class XElementExtensions
     {
-        internal static string Value(this XElement xElement,
-                                     string elementName = null,
-                                     string attributeName = null,
-                                     string attributeValue = null)
-        {
-            var value = ValueOrDefault(xElement, elementName, attributeName, attributeValue);
-
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                return value;
-            }
-
-            var errorMessage =
-                string.Format(
-                    "Expected the {0} '{1}' but failed to find it in the element '{2}' or that element exists, but with no data.",
-                    string.IsNullOrWhiteSpace(attributeName) ||
-                    string.IsNullOrWhiteSpace(attributeValue)
-                        ? "element"
-                        : "attribute",
-                    string.IsNullOrWhiteSpace(attributeName) ||
-                    string.IsNullOrWhiteSpace(attributeValue)
-                        ? elementName
-                        : attributeName,
-                    xElement.Name);
-            throw new Exception(errorMessage);
-        }
-
         internal static string ValueOrDefault(this XElement xElement,
                                               string elementName = null,
                                               string attributeName = null,

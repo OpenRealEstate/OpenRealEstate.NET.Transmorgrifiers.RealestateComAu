@@ -64,7 +64,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                 new SalePricing
                 {
                     SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                    SoldPrice = 580000M,
+                    SoldPrice = 580000,
                     SoldPriceText = "$580,000"
                 },
                 null // Ignored because display='yes'.
@@ -86,7 +86,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                 new SalePricing
                 {
                     SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                    SoldPrice = 580000M,
+                    SoldPrice = 580000,
                     SoldPriceText = null
                 },
                 null // No override provided.
@@ -97,7 +97,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                 new SalePricing
                 {
                     SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                    SoldPrice = 580000M,
+                    SoldPrice = 580000,
                     SoldPriceText = "aaaa" // Provided override/default.
                 },
                 "aaaa"
@@ -155,7 +155,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         [Theory]
         [InlineData("REA-Residential-Current-WithBadInspectionTime.xml",
             "Inspection element has an invald Date/Time value. Element: <inspection> 12:00AM to 12:00AM</inspection>")]
-        [InlineData("REA-Residential-Current-BadSalePrice.xml", "Failed to parse element: residential.price; value: '550000600000550000600000550000600000' into a decimal/money.")]
+        [InlineData("REA-Residential-Current-BadSalePrice.xml", "Failed to parse element: residential.price; value: '550000600000550000600000550000600000' into a int.")]
         [InlineData("REA-Residential-Sold-DisplayAttributeIsRange.xml",
             "Value 'range' is out of range. It should only be 0/1/yes/no. (Parameter 'value')")]
         [InlineData("REA-Residential-Current-WithABadBedroomNumber.xml",
@@ -201,7 +201,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
                 expectedListing.Pricing = new SalePricing
                 {
                     SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                    SoldPrice = 580000M,
+                    SoldPrice = 580000,
                     SoldPriceText = "$580,000"
                 };
             }
@@ -756,7 +756,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             expectedListing.Pricing = new SalePricing
             {
                 SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
-                SoldPrice = 580000M,
+                SoldPrice = 580000,
                 SoldPriceText = "$580,000"
             };
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Sold.xml");

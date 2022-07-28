@@ -264,6 +264,24 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             throw new Exception(errorMessage);
         }
 
+        internal static int? NullableIntValueOrDefault(this XElement xElement,
+                                                       string elementName = null)
+        {
+            var value = xElement.ValueOrDefault(elementName);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            if (int.TryParse(value, out var number))
+            {
+                return number;
+            }
+
+            var errorMessage = ParsingErrorMessage(value, "int", xElement, elementName);
+            throw new Exception(errorMessage);
+        }
+
         internal static decimal DecimalValueOrDefault(this XElement xElement,
                                                       string elementName = null)
         {

@@ -209,5 +209,22 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Assert.
             AssertRentalListing(result, expectedListing);
         }
+
+        [Fact]
+        public void GivenTheFileREARentalCurrentWithAPriceView_Parse_ReturnsARentalAvailableListing()
+        {
+            // Arrange.
+            var expectedListing = FakeListings.CreateAFakeRentalListing();
+            expectedListing.Pricing.RentalPriceText = "Property must be rented!!";
+
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rental-Current-WithPriceView.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            AssertRentalListing(result, expectedListing);
+        }
     }
 }

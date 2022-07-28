@@ -181,5 +181,33 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             result.Listings.Count.ShouldBe(0);
             result.Errors.Count.ShouldBe(1);
         }
+
+        [Theory]
+        [InlineData("week", PaymentFrequencyType.Weekly)]
+        [InlineData("WeEk", PaymentFrequencyType.Weekly)] // We should be doing a case insensitive lookup.
+        [InlineData("weekly", PaymentFrequencyType.Weekly)]
+        [InlineData("WeEkLy", PaymentFrequencyType.Weekly)] // We should be doing a case insensitive lookup.
+        [InlineData("month", PaymentFrequencyType.Monthly)]
+        [InlineData("MoNtH", PaymentFrequencyType.Monthly)] // We should be doing a case insensitive lookup.
+        [InlineData("monthly", PaymentFrequencyType.Monthly)]
+        [InlineData("MoNtHlY", PaymentFrequencyType.Monthly)] // We should be doing a case insensitive lookup.
+        [InlineData("blahblah", PaymentFrequencyType.Unknown)] // Fails to match.
+        public void GivenTheFileREARentalCurrentWithAMonthlyPaymentFrequency_Parse_ReturnsARentalAvailableListing(string frequency,
+                                                                                                                  PaymentFrequencyType expectedFrequency)
+        {
+            // Arrange.
+            var expectedListing = FakeListings.CreateAFakeRentalListing();
+            expectedListing.Pricing.PaymentFrequencyType = expectedFrequency;
+
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rental-Current-WithFrequency.xml");
+            reaXml = reaXml.Replace("XXXX-FREQUENCY", frequency); // Replace the 'template' variable with the frequency to test.
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            AssertRentalListing(result, expectedListing);
+        }
     }
 }

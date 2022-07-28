@@ -69,6 +69,9 @@
     <None Update="Sample Data\REA-MixedContent.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Sample Data\Rental\REA-Rental-Current-WithFrequency.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Sample Data\Rental\REA-Rental-Current-WithNoBond.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

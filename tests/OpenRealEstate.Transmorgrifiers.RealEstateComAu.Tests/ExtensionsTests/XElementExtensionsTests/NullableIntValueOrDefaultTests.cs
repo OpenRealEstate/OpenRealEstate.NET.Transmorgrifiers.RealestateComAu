@@ -8,8 +8,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.
 {
     public class NullableIntValueOrDefaultTests
     {
-        private const string ElementTempalte = "<price>XXX</price>";
-
         [Theory]
         [InlineData(null, null)]
         [InlineData(" ", null)]
@@ -18,7 +16,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.
         public void GivenAValidInteger_NullableIntValueOrDefault_ReturnsAnInteger(string textValue, int? expectedValue)
         {
             // Arrange.
-            var xElement = XElement.Parse(ElementTempalte.Replace("XXX", textValue));
+            var xElement = XElement.Parse(XElementExtensionsTestHelpers.ElementTemplate.Replace("XXX", textValue));
 
             // Act.
             var result = xElement.NullableIntValueOrDefault();
@@ -31,7 +29,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests.ExtensionsTests.
         public void GivenAnInvalidInteger_NullableIntValueOrDefault_ReturnsAnInteger()
         {
             // Arrange.
-            var xElement = XElement.Parse(ElementTempalte.Replace("XXX", "aaa"));
+            var xElement = XElement.Parse(XElementExtensionsTestHelpers.ElementTemplate.Replace("XXX", "aaa"));
 
             // Act.
             var exception = Should.Throw<Exception>(() => xElement.NullableIntValueOrDefault());

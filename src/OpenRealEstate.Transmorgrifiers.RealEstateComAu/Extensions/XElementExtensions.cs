@@ -305,108 +305,11 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             throw new Exception(errorMessage);
         }
 
-        internal static decimal? NullableDecimalValueOrDefault(this XElement xElement,
-                                                      string elementName = null)
-        {
-            var value = xElement.ValueOrDefault(elementName);
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return null;
-            }
-
-            // NOTE: This -cannot- handle currencies.
-            if (decimal.TryParse(value, out var number))
-            {
-                return number;
-            }
-
-            var errorMessage = ParsingErrorMessage(value, "decimal", xElement, elementName);
-            throw new Exception(errorMessage);
-        }
-
-        internal static decimal MoneyValueOrDefault(this XElement xElement,
-                                                    CultureInfo cultureInfo,
-                                                    string elementName = null)
-        {
-            var value = xElement.ValueOrDefault(elementName);
-            if (string.IsNullOrEmpty(value))
-            {
-                return 0M;
-            }
-
-            // NOTE: This can now handle values that are either currency or just numbers.
-            //       ie. $1000, 1000, etc.
-            if (decimal.TryParse(value,
-                                 NumberStyles.AllowCurrencySymbol | NumberStyles.Number,
-                                 cultureInfo,
-                                 out var number))
-            {
-                return number;
-            }
-
-            var errorMessage = ParsingErrorMessage(value, "money", xElement, elementName);
-            throw new Exception(errorMessage);
-        }
-
-        internal static void MoneyValueOrDefaultIfExists(this XElement xElement,
-                                                         Action<decimal> setValue,
-                                                         CultureInfo cultureInfo,
-                                                         string elementName = null)
-        {
-            var value = xElement.ValueOrDefault(elementName);
-            if (string.IsNullOrEmpty(value))
-            {
-                // Don't do anything.
-                return;
-            }
-
-            // NOTE: This can now handle values that are either currency or just numbers.
-            //       ie. $1000, 1000, etc.
-            if (decimal.TryParse(value,
-                                 NumberStyles.AllowCurrencySymbol | NumberStyles.Number,
-                                 cultureInfo,
-                                 out var number))
-            {
-                setValue(number);
-                return;
-            }
-
-            // Damn it! Failed to parse the value as a decimal/money :(
-            var errorMessage = ParsingErrorMessage(value, "decimal/money", xElement, elementName);
-            throw new Exception(errorMessage);
-        }
-
-        internal static decimal? NullableMoneyValueOrDefault(this XElement xElement,
-                                                             CultureInfo cultureInfo,
-                                                             string elementName = null)
-        {
-            var value = xElement.ValueOrDefault(elementName);
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-
-            return xElement.MoneyValueOrDefault(cultureInfo, elementName);
-        }
-
         internal static byte ByteValueOrDefault(this XElement xElement,
                                                 string elementName = null)
         {
             var value = xElement.ValueOrDefault(elementName);
             return value.ParseByteValueOrDefault();
-        }
-
-        internal static void ByteValueOrDefaultIfExists(this XElement xElement,
-                                                        Action<byte> setValue,
-                                                        string elementName = null)
-        {
-            var action = new Action<string>(value =>
-            {
-                var byteValue = value.ParseByteValueOrDefault();
-                setValue(byteValue);
-            });
-
-            xElement.ValueOrDefaultIfExists(action, elementName);
         }
 
         internal static bool BoolValueOrDefault(this XElement xElement,

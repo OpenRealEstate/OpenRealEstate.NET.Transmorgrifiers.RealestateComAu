@@ -1,4 +1,4 @@
-﻿namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
+namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 {
     public static class XmlFeatureHelpers
     {
@@ -24,6 +24,7 @@
             "hydronicHeating",
             "insideSpa",
             "intercom",
+            "mobilityFriendly",
             "openFirePlace",
             "outdoorEnt",
             "outsideSpa",

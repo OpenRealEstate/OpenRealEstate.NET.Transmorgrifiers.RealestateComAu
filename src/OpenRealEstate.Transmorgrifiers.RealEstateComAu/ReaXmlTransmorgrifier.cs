@@ -1282,6 +1282,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 {
                     media.Add(new Media
                     {
+                        Id = Guid.NewGuid().ToString(), // We don't have this data in the REA Xml file but it's required.
                         CreatedOn = null, // We don't have this data in the REA Xml file.
                         Order = 1,
                         Url = videoUrl,

@@ -232,9 +232,13 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 return 0;
             }
 
-            if (int.TryParse(value, out var number))
+            // Sometimes, the data value _might_ be a decimal!
+            // So we should assume it's a decimal (to play it safe) then down-convert it to
+            // an int, which would then drop the decimal values.
+            if (decimal.TryParse(value, out var decimalNumber))
             {
-                return number;
+                // Yep! we have something, so lets down-convert it.
+                return (int)decimalNumber;
             }
 
             var errorMessage = ParsingErrorMessage(value, "int", xElement, elementName);
@@ -250,15 +254,18 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 return null;
             }
 
-            if (int.TryParse(value, out var number))
+            // Sometimes, the data value _might_ be a decimal!
+            // So we should assume it's a decimal (to play it safe) then down-convert it to
+            // an int, which would then drop the decimal values.
+            if (decimal.TryParse(value, out var decimalNumber))
             {
-                return number;
+                // Yep! we have something, so lets down-convert it.
+                return (int)decimalNumber;
             }
 
             var errorMessage = ParsingErrorMessage(value, "int", xElement, elementName);
             throw new Exception(errorMessage);
         }
-
         internal static decimal DecimalValueOrDefault(this XElement xElement,
                                                       string elementName = null)
         {

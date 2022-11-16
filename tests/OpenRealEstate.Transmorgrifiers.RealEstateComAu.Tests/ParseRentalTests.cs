@@ -226,5 +226,21 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             // Assert.
             AssertRentalListing(result, expectedListing);
         }
+
+        [Fact]
+        public void GivenThePriceHasCents_Parse_ReturnsARentalAvailableListing()
+        {
+            // Arrange.
+            var expectedListing = FakeListings.CreateAFakeRentalListing();
+
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rental-Current-PriceHasCents.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            AssertRentalListing(result, expectedListing);
+        }
     }
 }

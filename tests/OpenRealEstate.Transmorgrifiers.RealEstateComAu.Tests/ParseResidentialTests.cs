@@ -855,5 +855,20 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             newListing.Description = DateTime.UtcNow.ToString(); // Change.
             newListing.Description.ShouldNotBe(source.Description); // Both should now be different.
         }
+
+        [Fact]
+        public void GivenAnListingWithCentsInTheSalePrice_Parse_ReturnsAResidentialAvailableListing()
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-PriceHasCents.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            var listing = result.Listings.First().Listing as ResidentialListing;
+            listing.Pricing.SalePrice.ShouldBe(500000);
+        }
     }
 }

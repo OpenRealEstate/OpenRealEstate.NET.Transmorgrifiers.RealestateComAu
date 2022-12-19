@@ -870,5 +870,30 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             var listing = result.Listings.First().Listing as ResidentialListing;
             listing.Pricing.SalePrice.ShouldBe(500000);
         }
+
+        [Fact]
+        public void GivenAnExistingListingWithASalePriceAndASoldListing_Parse_ReturnsAResidentialSoldListingWithSalePriceStillExisting()
+        {
+            // Arrange.
+            var existingReaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current.xml");
+            var soldReadXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Sold.xml");
+
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+            var existingListing = reaXmlTransmorgrifier
+                .Parse(existingReaXml)
+                .Listings
+                .First()
+                .Listing as ResidentialListing;
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(soldReadXml, existingListing);
+
+            // Assert.
+            var updatedListing = result.Listings.First().Listing as ResidentialListing;
+            updatedListing.Pricing.SalePrice.ShouldBe(existingListing.Pricing.SalePrice);
+            updatedListing.Pricing.SalePriceText.ShouldBe(existingListing.Pricing.SalePriceText);
+            updatedListing.Pricing.SoldPrice.ShouldBe(580_000);
+            updatedListing.Pricing.SoldPriceText.ShouldBe("$580,000");
+        }
     }
 }

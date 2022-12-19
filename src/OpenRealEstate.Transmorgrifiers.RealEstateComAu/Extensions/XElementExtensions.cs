@@ -245,6 +245,23 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             throw new Exception(errorMessage);
         }
 
+        internal static void IntValueOrDefaultIfExists(this XElement xElement,
+                                                      Action<int> setValue,
+                                                      CultureInfo cultureInfo,
+                                                      string elementName = null)
+        {
+            var value = xElement.ValueOrDefault(elementName);
+            if (string.IsNullOrEmpty(value))
+            {
+                // Don't do anything.
+                return;
+            }
+
+            var number = xElement.IntValueOrDefault(elementName);
+            setValue(number);
+            return;
+        }
+
         internal static int? NullableIntValueOrDefault(this XElement xElement,
                                                        string elementName = null)
         {

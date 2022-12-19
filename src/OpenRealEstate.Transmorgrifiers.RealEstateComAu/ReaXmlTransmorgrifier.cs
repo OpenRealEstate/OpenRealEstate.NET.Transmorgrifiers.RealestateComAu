@@ -1419,20 +1419,42 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
             Guard.AgainstNull(salePricing);
 
-            salePricing.SalePrice = document.IntValueOrDefault("price");
+            /*
+            // **********************************************************
+            // PLEASE READ:
+            // **********************************************************
+            
+                Sale Price is calculated from a MIX of -optional- XML fields
+            
+                <price display="yes">500000</price>
+                <priceView>Between $400,000 and $600,000</priceView>
+             
+                Both of these elements are OPTIONAL, which makes this harder.
+                1. We first grab the sale price, if there is one.
+                   This is secret and we always need to have a value, when one is provided.
+                2. Next, we need to determine the price "TEXT" value. This is
+                   based off the following order of operations:
+                       a) Display == No. Stop and no value
+                       b) PriceView value. If some text, use that. Otherwise, use the value
+                          of the Price, converted to a string.
+             */
 
-            // ### MASSIVE NOTICE ###
-            // This is where shit gets real. :/
-            // <Price> and <PriceView> are optional. :/
-            // If we have a <PriceView> .. we need to do all our normal hardcore crazy tests and shit.
-            // Otherwise, we need to just work off the <Price> .. _if_ we have one.
+
+            // We always want a sale price, if the xml element exists.
+            document.IntValueOrDefaultIfExists(
+                salePrice => salePricing.SalePrice = salePrice,
+                cultureInfo,
+                "price");
+
+
+            // Now for the harder part -> determining the price "TEXT" value.
 
             var priceViewElement = document.Element("priceView");
             var priceElement = document.Element("price");
+
+            // We use the priceView value if we have one, over the price value.
             if (priceViewElement != null)
             {
-                // We have a priceView element.
-                // We also assume that if we have a priceView element, we have a price element.
                 CalculateSalePriceWhenPriceViewElementExists(document, salePricing, defaultSalePriceTextIfMissing);
             }
             else if (priceElement != null)

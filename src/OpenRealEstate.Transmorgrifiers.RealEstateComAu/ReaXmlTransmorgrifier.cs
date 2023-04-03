@@ -670,8 +670,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             }
 
             // Land and CommericalLand should only provide lot numbers. 
-            var lotNumber = addressElement.ValueOrDefault("lotNumber");
-            var subNumber = addressElement.ValueOrDefault("subNumber");
+            listing.Address.LotNumber = addressElement.ValueOrDefault("lotNumber");
+            listing.Address.SubNumber = addressElement.ValueOrDefault("subNumber");
             var streetNumber = addressElement.ValueOrDefault("streetNumber");
 
             // LOGIC:
@@ -692,11 +692,11 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             // Lot number logic: If the value contains the word LOT in it, then we don't
             // need to do anything. Otherwise, we should have a value the starts with 'LOT'.
             // eg. LOT 123abc
-            var lotNumberResult = string.IsNullOrWhiteSpace(lotNumber)
+            var lotNumberResult = string.IsNullOrWhiteSpace(listing.Address.LotNumber)
                                       ? string.Empty
-                                      : lotNumber.IndexOf("lot", StringComparison.OrdinalIgnoreCase) > 0
-                                          ? lotNumber
-                                          : $"LOT {lotNumber}";
+                                      : listing.Address.LotNumber.IndexOf("lot", StringComparison.OrdinalIgnoreCase) > 0
+                                          ? listing.Address.LotNumber
+                                          : $"LOT {listing.Address.LotNumber}";
 
             // Sub number and Street number logic: A sub number can exist -before- the street number.
             // A street number might NOT exist, so a sub number is all by itself.
@@ -707,7 +707,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             //   eg. 45f/231 15
             // So we don't put a delimeter in there, but a space. Urgh! confusing, so sowwy.
 
-            var subNumberLotNumber = $"{subNumber} {lotNumberResult}".Trim();
+            var subNumberLotNumber = $"{listing.Address.SubNumber} {lotNumberResult}".Trim();
 
             // We only have a delimeter if we have a sub-or-lot number **and**
             // a street number.
@@ -749,6 +749,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             // Technically, the <municipality/> element is not a child of the <address/> element.
             // But I feel that it's sensible to still parse for it, in here.
             document.ValueOrDefaultIfExists(municipality => listing.Address.Municipality = municipality, "municipality");
+
+            // Street View
+            var streetView = addressElement.ValueOrDefault("streetView");
 
             // Finally - Lat/Longs. These are -not- part of the REA XML standard.
             // ~BUT~ some multi-loaders are sticking this data into some xml!
@@ -1852,6 +1855,27 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             document.ValueOrDefaultIfExists(councilRates => residentialListing.CouncilRates = councilRates, "councilRates");
             ExtractHomeAndLandPackage(document, residentialListing);
             ExtractResidentialNewConstruction(document, residentialListing);
+            ExtractSaleDetails(document, residentialListing);
+        }
+
+        private static void ExtractSaleDetails(XElement document, 
+                                               ISaleDetails listing)
+        {
+            Guard.AgainstNull(document);
+            Guard.AgainstNull(listing);
+
+            document.ValueOrDefaultIfExists(
+                authorityType => listing.Authority = AuthorityTypeHelpers.ToAuthorityType(authorityType),
+                "authority",
+                "value");
+
+            document.ValueOrDefaultIfExists(
+                yearBuilt => listing.YearBuilt = yearBuilt,
+                "yearBuilt");
+
+            document.ValueOrDefaultIfExists(
+                yearLastRenovated => listing.YearLastRenovated = yearLastRenovated,
+                "yearLastRenovated");
         }
 
         private static void ExtractHomeAndLandPackage(XContainer document,
@@ -1969,6 +1993,11 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                                     ? rentalPricing.RentalPrice.ToString("C0")
                                                     : null;
 
+                var depositTakenValue = rentElement.ValueOrDefault("depositTaken", "value");
+                rentalPricing.DepositTaken = (string.IsNullOrEmpty(depositTakenValue)
+                                                && depositTakenValue.ParseOneYesZeroNoToBool()) 
+                                                || false;
+
                 // NOTE: We only parse the first one. You have more than one? Pffftttt!!! Die!
                 break;
             }
@@ -2031,6 +2060,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             ExtractAuction(document, landListing);
             landListing.Estate = ExtractLandEstate(document);
             landListing.CouncilRates = document.ValueOrDefault("councilRates");
+            ExtractSaleDetails(document, landListing);
         }
 
         private static OpenRealEstate.Core.Land.CategoryType ExtractLandCategoryType(XElement xElement)
@@ -2081,6 +2111,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             ruralListing.CouncilRates = ExtractRuralCouncilRates(document);
             ExtractBuildingDetails(document, ruralListing);
             ExtractRuralNewConstruction(document, ruralListing);
+            ExtractSaleDetails(document, ruralListing);
         }
 
         private static OpenRealEstate.Core.Rural.CategoryType ExtractRuralCategoryType(XContainer document)

@@ -1374,7 +1374,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
         }
 
         private static void ExtractSalePricing(XElement document,
-                                               ISalePricing listing,
+                                               ISaleDetails listing,
                                                string defaultSalePriceTextIfMissing,
                                                string defaultSoldPriceTextIfMissing,
                                                CultureInfo cultureInfo)
@@ -1627,7 +1627,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
         // <auction date="2003-12-04T18:30" />
         // Has to have a 'date' attribute. 
         private static void ExtractAuction(XElement document,
-                                           IAuctionOn listing)
+                                           ISaleDetails listing)
         {
             Guard.AgainstNull(document);
             Guard.AgainstNull(listing);

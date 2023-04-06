@@ -672,60 +672,21 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 listing.Address = new Address();
             }
 
-            // Land and CommericalLand should only provide lot numbers. 
-            listing.Address.LotNumber = addressElement.ValueOrDefault("lotNumber");
-            listing.Address.SubNumber = addressElement.ValueOrDefault("subNumber");
-            var streetNumber = addressElement.ValueOrDefault("streetNumber");
+            // Land and CommericalLand -should- only provide lot numbers. 
+            var lot = addressElement.ValueOrDefault("lotNumber");
 
-            // LOGIC:
-            // So, we're trying to create a streetnumber value that contains the REA values
-            //     Sub Number
-            //     Lot Number
-            //     Street Number
-            // into a single value. URGH.
-            // This is because REA have over fricking complicated shiz (again). So lets just
-            // keep this simple, eh? :)
-
-            // FORMAT: subnumber lotnumber streetnumber
-            // eg. 23a/135 smith street
-            //     6/23a 135 smith street
-            //     23a lot 33 smith street
-            //     23a lot 33/135 smith street
-
-            // Lot number logic: If the value contains the word LOT in it, then we don't
-            // need to do anything. Otherwise, we should have a value the starts with 'LOT'.
+            // Lot number logic: If the value contains the word LOT (case insensitive) in it,
+            // then we don't need to do anything. Otherwise, we should have a value the starts with 'LOT'.
             // eg. LOT 123abc
-            var lotNumberResult = string.IsNullOrWhiteSpace(listing.Address.LotNumber)
-                                      ? string.Empty
-                                      : listing.Address.LotNumber.IndexOf("lot", StringComparison.OrdinalIgnoreCase) > 0
-                                          ? listing.Address.LotNumber
-                                          : $"LOT {listing.Address.LotNumber}";
-
-            // Sub number and Street number logic: A sub number can exist -before- the street number.
-            // A street number might NOT exist, so a sub number is all by itself.
-            // When we want to show a sub number, we probably want to show it, like this:
-            //    'subNumber`delimeter`streetNumber`
-            //   eg. 12a/432
-            // But .. sometimes, the sub number -already- contains a delimeter! so then we want this:
-            //   eg. 45f/231 15
-            // So we don't put a delimeter in there, but a space. Urgh! confusing, so sowwy.
-
-            var subNumberLotNumber = $"{listing.Address.SubNumber} {lotNumberResult}".Trim();
-
-            // We only have a delimeter if we have a sub-or-lot number **and**
-            // a street number.
-            // Also, we use the default delimeter if we don't have one already in the
-            // sub-or-lot number.
-            var delimeter = string.IsNullOrWhiteSpace(subNumberLotNumber)
-                                ? string.Empty
-                                : subNumberLotNumber.IndexOfAny(AddressDelimeterSearchTypes) > 0
-                                    ? " "
-                                    : string.IsNullOrWhiteSpace(streetNumber)
-                                        ? string.Empty
-                                        : addressDelimeter;
-
-            listing.Address.StreetNumber = $"{subNumberLotNumber}{delimeter}{streetNumber}".Trim();
-
+            var lotNumberResult = string.IsNullOrWhiteSpace(lot)
+                                      ? null
+                                      : lot.IndexOf("lot", StringComparison.OrdinalIgnoreCase) > 0
+                                          ? lot
+                                          : $"LOT {lot}";
+            listing.Address.LotNumber = lotNumberResult;
+            
+            listing.Address.SubNumber = addressElement.ValueOrDefault("subNumber");
+            listing.Address.StreetNumber = addressElement.ValueOrDefault("streetNumber");
             listing.Address.Street = addressElement.ValueOrDefault("street");
             listing.Address.Suburb = addressElement.ValueOrDefault("suburb");
 
@@ -1872,9 +1833,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 "authority",
                 "value");
 
-            listing.YearBuilt = document.IntValueOrDefault("yearBuilt");
+            listing.YearBuilt = document.NullableIntValueOrDefault("yearBuilt");
 
-            listing.YearLastRenovated = document.IntValueOrDefault("yearLastRenovated");
+            listing.YearLastRenovated = document.NullableIntValueOrDefault("yearLastRenovated");
         }
 
         private static void ExtractHomeAndLandPackage(XContainer document,
@@ -1992,10 +1953,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                                     ? rentalPricing.RentalPrice.ToString("C0")
                                                     : null;
 
-                var depositTakenValue = rentElement.ValueOrDefault("depositTaken", "value");
-                rentalPricing.HasTakenDeposit = (string.IsNullOrEmpty(depositTakenValue)
-                                                    && depositTakenValue.ParseOneYesZeroNoToBool())
-                                                    || false;
+                rentalPricing.HasTakenDeposit = xElement.NullableBoolValueOrDefault("depositTaken");
 
                 // NOTE: We only parse the first one. You have more than one? Pffftttt!!! Die!
                 break;

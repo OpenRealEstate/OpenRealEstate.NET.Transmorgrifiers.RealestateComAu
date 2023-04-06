@@ -26,8 +26,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Core" Version="108.0.0-beta" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Core" Version="111.0.0-beta" />
   </ItemGroup>
 
   <ItemGroup>

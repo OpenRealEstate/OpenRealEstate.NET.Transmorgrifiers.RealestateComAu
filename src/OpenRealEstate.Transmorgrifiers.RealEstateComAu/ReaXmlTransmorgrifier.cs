@@ -684,7 +684,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                           ? lot
                                           : $"LOT {lot}";
             listing.Address.LotNumber = lotNumberResult;
-            
+
             listing.Address.SubNumber = addressElement.ValueOrDefault("subNumber");
             listing.Address.StreetNumber = addressElement.ValueOrDefault("streetNumber");
             listing.Address.Street = addressElement.ValueOrDefault("street");
@@ -713,9 +713,6 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             // Technically, the <municipality/> element is not a child of the <address/> element.
             // But I feel that it's sensible to still parse for it, in here.
             document.ValueOrDefaultIfExists(municipality => listing.Address.Municipality = municipality, "municipality");
-
-            // Street View
-            var streetView = addressElement.ValueOrDefault("streetView");
 
             // Finally - Lat/Longs. These are -not- part of the REA XML standard.
             // ~BUT~ some multi-loaders are sticking this data into some xml!

@@ -74,4 +74,6 @@
         <waterTank>1</waterTank>
         <greyWaterSystem>0</greyWaterSystem>
     </ecoFriendly>
+    <yearBuilt>1950</yearBuilt>
+    <yearLastRenovated>1960</yearLastRenovated>
 </land>

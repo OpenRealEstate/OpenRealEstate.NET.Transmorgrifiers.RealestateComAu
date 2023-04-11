@@ -101,12 +101,19 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Fact]
-        public void GivenTheFileREARuralSolder_Parse_ReturnsARemovedListing()
+        public void GivenTheFileREARuralSold_Parse_ReturnsARemovedListing()
         {
             // Arrange.
             var expectedListing = CreateAFakeEmptyRuralListing("Rural-Sold-ABCD1234");
             expectedListing.StatusType = StatusType.Sold;
             expectedListing.SourceStatus = "sold";
+            expectedListing.Pricing = new SalePricing
+            {
+                SoldPrice = 85000,
+                SoldOn = new DateTime(2009, 1, 10, 12, 30, 00),
+                SoldPriceText = "$85,000"
+            };
+
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rural-Sold.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 

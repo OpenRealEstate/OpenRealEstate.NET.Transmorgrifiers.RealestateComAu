@@ -470,7 +470,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             expectedListing.SourceStatus = "current";
             expectedListing.Address = new Address
             {
-                StreetNumber = "2/39",
+                SubNumber = "2",
+                StreetNumber = "39",
                 Street = "Main Road",
                 Suburb = "RICHMOND",
                 State = "Victoria",
@@ -527,35 +528,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Fact]
-        public void
-            GivenTheFileREAResidentialCurrentWithAStreetNumberAndASingleSubNumberWithACustomDelimeter_Parse_ReturnsAResidentialAvailableListing
-            ()
+        public void GivenTheFileREAResidentialCurrentWithAStreetNumberAndASubNumber_Parse_ReturnsAResidentialAvailableListing()
         {
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeResidentialListing();
-            expectedListing.Address.StreetNumber = "2-39";
-            expectedListing.Address.DisplayAddress = expectedListing.Address.ToString();
-            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithAStreetNumberAndASingleSubNumber.xml");
-            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier
-            {
-                AddressDelimeter = "-"
-            };
-
-            // Act.
-            var result = reaXmlTransmorgrifier.Parse(reaXml);
-
-            // Assert.
-            AssertResidentialListing(result, expectedListing);
-        }
-
-        [Fact]
-        public void
-            GivenTheFileREAResidentialCurrentWithAStreetNumberAndASubNumber_Parse_ReturnsAResidentialAvailableListing
-            ()
-        {
-            // Arrange.
-            var expectedListing = FakeListings.CreateAFakeResidentialListing();
-            expectedListing.Address.StreetNumber = "2/77a 39";
+            expectedListing.Address.SubNumber = "2/77a";
+            expectedListing.Address.StreetNumber = "39";
             expectedListing.Address.DisplayAddress = expectedListing.Address.ToString();
 
             var reaXml =
@@ -682,13 +660,12 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Fact]
-        public void
-            GivenTheFileREAResidentialCurrentWithNoStreetNumberButASubNumber_Parse_ReturnsAResidentialAvailableListing
-            ()
+        public void GivenTheFileREAResidentialCurrentWithNoStreetNumberButASubNumber_Parse_ReturnsAResidentialAvailableListing()
         {
             // Arrange.
             var expectedListing = FakeListings.CreateAFakeResidentialListing();
-            expectedListing.Address.StreetNumber = "2/77a";
+            expectedListing.Address.SubNumber = "2/77a";
+            expectedListing.Address.StreetNumber = null;
             expectedListing.Address.DisplayAddress = expectedListing.Address.ToString();
 
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithNoStreetNumberButASubNumber.xml");
@@ -796,7 +773,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Residential-Current.xml", "2/39 Main Road, RICHMOND, Victoria 3121")] // Display == true/yes.
+        [InlineData("REA-Residential-Current.xml", "2, 39 Main Road, RICHMOND, Victoria 3121")] // Display == true/yes.
         [InlineData("REA-Residential-Current-AddressDisplayIsNo.xml", "RICHMOND, Victoria 3121")] // Display == false/no.
         public void GivenTheFileREAResidentialWithSomeAddressDisplayValues_Parse_ReturnsAResidentialSoldListing(string fileName,
                                                                                                                 string expectedDisplayAddress)

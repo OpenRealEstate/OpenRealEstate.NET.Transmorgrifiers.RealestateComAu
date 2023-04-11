@@ -122,7 +122,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
         /// Value to be displayed between the street number, appartment number, etc and the street name.
         /// </summary>
         /// <example>"/" == 5/10 Smith Street.<br/>"-" == 5-10 Smith Street.</example>
-        public string AddressDelimeter  { get; set; } = "/";
+        public string AddressDelimeter { get; set; } = "/";
 
         /// <summary>
         /// If no sale price text is determined (or it's explicitly off) then this value will be substituted.
@@ -454,7 +454,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             var categoryType = document.Name.ToCategoryType();
 
             // We can only handle a subset of all the category types.
-            var listing = existingListing == null 
+            var listing = existingListing == null
                 ? CreateListing(categoryType)
                 : CreateListing(existingListing);
             if (listing == null)
@@ -471,7 +471,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 // Extract specific data.
                 if (listing is ResidentialListing)
                 {
-                    ExtractResidentialData(listing as ResidentialListing, 
+                    ExtractResidentialData(listing as ResidentialListing,
                                            document,
                                            defaultSalePriceTextIfMissing,
                                            defaultSoldPriceTextIfMissing,
@@ -485,8 +485,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
                 if (listing is LandListing)
                 {
-                    ExtractLandData(listing as LandListing, 
-                                    document, 
+                    ExtractLandData(listing as LandListing,
+                                    document,
                                     defaultSalePriceTextIfMissing,
                                     defaultSoldPriceTextIfMissing,
                                     cultureInfo);
@@ -494,7 +494,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
                 if (listing is RuralListing)
                 {
-                    ExtractRuralData(listing as RuralListing, 
+                    ExtractRuralData(listing as RuralListing,
                                      document,
                                      defaultSalePriceTextIfMissing,
                                      defaultSoldPriceTextIfMissing,
@@ -669,60 +669,21 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 listing.Address = new Address();
             }
 
-            // Land and CommericalLand should only provide lot numbers. 
-            var lotNumber = addressElement.ValueOrDefault("lotNumber");
-            var subNumber = addressElement.ValueOrDefault("subNumber");
-            var streetNumber = addressElement.ValueOrDefault("streetNumber");
+            // Land and CommericalLand -should- only provide lot numbers. 
+            var lot = addressElement.ValueOrDefault("lotNumber");
 
-            // LOGIC:
-            // So, we're trying to create a streetnumber value that contains the REA values
-            //     Sub Number
-            //     Lot Number
-            //     Street Number
-            // into a single value. URGH.
-            // This is because REA have over fricking complicated shiz (again). So lets just
-            // keep this simple, eh? :)
-
-            // FORMAT: subnumber lotnumber streetnumber
-            // eg. 23a/135 smith street
-            //     6/23a 135 smith street
-            //     23a lot 33 smith street
-            //     23a lot 33/135 smith street
-
-            // Lot number logic: If the value contains the word LOT in it, then we don't
-            // need to do anything. Otherwise, we should have a value the starts with 'LOT'.
+            // Lot number logic: If the value contains the word LOT (case insensitive) in it,
+            // then we don't need to do anything. Otherwise, we should have a value the starts with 'LOT'.
             // eg. LOT 123abc
-            var lotNumberResult = string.IsNullOrWhiteSpace(lotNumber)
-                                      ? string.Empty
-                                      : lotNumber.IndexOf("lot", StringComparison.OrdinalIgnoreCase) > 0
-                                          ? lotNumber
-                                          : $"LOT {lotNumber}";
+            var lotNumberResult = string.IsNullOrWhiteSpace(lot)
+                                      ? null
+                                      : lot.IndexOf("lot", StringComparison.OrdinalIgnoreCase) > 0
+                                          ? lot
+                                          : $"LOT {lot}";
+            listing.Address.LotNumber = lotNumberResult;
 
-            // Sub number and Street number logic: A sub number can exist -before- the street number.
-            // A street number might NOT exist, so a sub number is all by itself.
-            // When we want to show a sub number, we probably want to show it, like this:
-            //    'subNumber`delimeter`streetNumber`
-            //   eg. 12a/432
-            // But .. sometimes, the sub number -already- contains a delimeter! so then we want this:
-            //   eg. 45f/231 15
-            // So we don't put a delimeter in there, but a space. Urgh! confusing, so sowwy.
-
-            var subNumberLotNumber = $"{subNumber} {lotNumberResult}".Trim();
-
-            // We only have a delimeter if we have a sub-or-lot number **and**
-            // a street number.
-            // Also, we use the default delimeter if we don't have one already in the
-            // sub-or-lot number.
-            var delimeter = string.IsNullOrWhiteSpace(subNumberLotNumber)
-                                ? string.Empty
-                                : subNumberLotNumber.IndexOfAny(AddressDelimeterSearchTypes) > 0
-                                    ? " "
-                                    : string.IsNullOrWhiteSpace(streetNumber)
-                                        ? string.Empty
-                                        : addressDelimeter;
-
-            listing.Address.StreetNumber = $"{subNumberLotNumber}{delimeter}{streetNumber}".Trim();
-
+            listing.Address.SubNumber = addressElement.ValueOrDefault("subNumber");
+            listing.Address.StreetNumber = addressElement.ValueOrDefault("streetNumber");
             listing.Address.Street = addressElement.ValueOrDefault("street");
             listing.Address.Suburb = addressElement.ValueOrDefault("suburb");
 
@@ -745,7 +706,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             // Determine the 'Display Address' which is the address we display to the user.
             // This is mainly determined by the 'display == ??' value.
             CalculateDisplayAddress(addressElement, listing.Address);
-            
+
             // Technically, the <municipality/> element is not a child of the <address/> element.
             // But I feel that it's sensible to still parse for it, in here.
             document.ValueOrDefaultIfExists(municipality => listing.Address.Municipality = municipality, "municipality");
@@ -772,7 +733,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             {
                 throw new ArgumentNullException(nameof(address));
             }
-            
+
             /* If we are not suppose to show the street, then we just show the 
                suburb and state instead - a convention I've decided to do. ¯\_(ツ)_/¯
                NOTE: Display (attribute) has the values of:
@@ -787,9 +748,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                     addressElement.AttributeBoolValueOrDefault("display"); // Parse value for True/False.
 
             // eg. 395 Upper Heidelberg Road, Ivanhoe VIC 3079.
-            address.DisplayAddress = address.ToFormattedAddress(isStreetDisplayed, 
-                                                                StateReplacementType.ReplaceToLongText, 
-                                                                false, 
+            address.DisplayAddress = address.ToFormattedAddress(isStreetDisplayed,
+                                                                StateReplacementType.ReplaceToLongText,
+                                                                false,
                                                                 true);
         }
 
@@ -1157,7 +1118,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 {
                     OpensOn = inspectionStartsOn,
                     ClosesOn = inspectionEndsOn == inspectionStartsOn
-                                   ? (DateTime?) null
+                                   ? (DateTime?)null
                                    : inspectionEndsOn
                 };
 
@@ -1254,7 +1215,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                     {
                         Id = id,
                         CreatedOn = string.IsNullOrWhiteSpace(createdOn)
-                                        ? (DateTime?) null
+                                        ? (DateTime?)null
                                         : ToDateTime(createdOn, $"<{elementName} modTime='..'/>"),
                         Url = string.IsNullOrWhiteSpace(url)
                                   ? string.IsNullOrWhiteSpace(file)
@@ -1311,7 +1272,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             {
                 return;
             }
-            
+
 
             // Notes: Will only extract documents that:
             // 1 - Are a 'Statement Of Information'. We ignore 'Agent Photos'.
@@ -1327,7 +1288,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                                      Url = e.AttributeValueOrDefault("url"),
                                                      ContentType = string.IsNullOrWhiteSpace(e.AttributeValueOrDefault("contentType")) // ContentType is now optional!
                                                         ? AttachmentContentTypeApplicationPdf
-                                                        : e.AttributeValueOrDefault("contentType"), 
+                                                        : e.AttributeValueOrDefault("contentType"),
                                                      Order = ++order
                                                  })
                                         .OrderBy(x => x.Order)
@@ -1374,7 +1335,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
         }
 
         private static void ExtractSalePricing(XElement document,
-                                               ISalePricing listing,
+                                               ISaleDetails listing,
                                                string defaultSalePriceTextIfMissing,
                                                string defaultSoldPriceTextIfMissing,
                                                CultureInfo cultureInfo)
@@ -1396,9 +1357,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                 listing.Pricing = new SalePricing();
             }
 
-            ExtractSalePrice(document, 
-                             listing.Pricing, 
-                             defaultSalePriceTextIfMissing, 
+            ExtractSalePrice(document,
+                             listing.Pricing,
+                             defaultSalePriceTextIfMissing,
                              cultureInfo);
 
             ExtractSoldDetails(document, listing.Pricing, defaultSoldPriceTextIfMissing);
@@ -1579,7 +1540,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(salePricing);
 
             var soldPrice = document.NullableIntValueOrDefault();
-            
+
             // NOTE: We get lots of 'sold price == 0' ... so in these cases, we make it 'null'.
             salePricing.SoldPrice = !soldPrice.HasValue ||
                 soldPrice <= 0
@@ -1627,7 +1588,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
         // <auction date="2003-12-04T18:30" />
         // Has to have a 'date' attribute. 
         private static void ExtractAuction(XElement document,
-                                           IAuctionOn listing)
+                                           ISaleDetails listing)
         {
             Guard.AgainstNull(document);
             Guard.AgainstNull(listing);
@@ -1663,7 +1624,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             {
                 Area = buildingDetailsElement.UnitOfMeasureOrDefault("area", "unit"),
                 EnergyRating = energyRating <= 0
-                                   ? (decimal?) null
+                                   ? (decimal?)null
                                    : energyRating,
             };
         }
@@ -1691,7 +1652,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             var frontage = landDetailsElement.SideOrDefault("frontage", "unit");
             if (frontage != null)
             {
-               details.Sides.Add(frontage);
+                details.Sides.Add(frontage);
             }
 
             var depthElements = landDetailsElement.Elements("depth").ToArray();
@@ -1808,7 +1769,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
 
         private static int ConvertImageOrderToNumber(string imageOrder)
         {
-            return imageOrder.Sum(c => c.ToString().Equals("M", StringComparison.OrdinalIgnoreCase) 
+            return imageOrder.Sum(c => c.ToString().Equals("M", StringComparison.OrdinalIgnoreCase)
                 ? -1
                 : c);
         }
@@ -1842,7 +1803,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             // replace action iwth IPropertyType, ISalePricing, etc.
 
             ExtractResidentialAndRentalPropertyType(document, residentialListing);
-            ExtractSalePricing(document, 
+            ExtractSalePricing(document,
                                residentialListing,
                                defaultSalePriceTextIfMissing,
                                defaultSoldPriceTextIfMissing,
@@ -1852,6 +1813,23 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             document.ValueOrDefaultIfExists(councilRates => residentialListing.CouncilRates = councilRates, "councilRates");
             ExtractHomeAndLandPackage(document, residentialListing);
             ExtractResidentialNewConstruction(document, residentialListing);
+            ExtractSaleDetails(document, residentialListing);
+        }
+
+        private static void ExtractSaleDetails(XElement document,
+                                               ISaleDetails listing)
+        {
+            Guard.AgainstNull(document);
+            Guard.AgainstNull(listing);
+
+            document.ValueOrDefaultIfExists(
+                authorityType => listing.Authority = AuthorityTypeHelpers.ToAuthorityType(authorityType),
+                "authority",
+                "value");
+
+            listing.YearBuilt = document.NullableIntValueOrDefault("yearBuilt");
+
+            listing.YearLastRenovated = document.NullableIntValueOrDefault("yearLastRenovated");
         }
 
         private static void ExtractHomeAndLandPackage(XContainer document,
@@ -1969,6 +1947,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
                                                     ? rentalPricing.RentalPrice.ToString("C0")
                                                     : null;
 
+                rentalPricing.HasTakenDeposit = xElement.NullableBoolValueOrDefault("depositTaken");
+
                 // NOTE: We only parse the first one. You have more than one? Pffftttt!!! Die!
                 break;
             }
@@ -2023,14 +2003,15 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
 
             landListing.CategoryType = ExtractLandCategoryType(document);
-            ExtractSalePricing(document, 
-                               landListing, 
+            ExtractSalePricing(document,
+                               landListing,
                                defaultSalePriceTextIfMissing,
                                defaultSoldPriceTextIfMissing,
                                cultureInfo);
             ExtractAuction(document, landListing);
             landListing.Estate = ExtractLandEstate(document);
             landListing.CouncilRates = document.ValueOrDefault("councilRates");
+            ExtractSaleDetails(document, landListing);
         }
 
         private static OpenRealEstate.Core.Land.CategoryType ExtractLandCategoryType(XElement xElement)
@@ -2071,8 +2052,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             Guard.AgainstNull(document);
 
             ruralListing.CategoryType = ExtractRuralCategoryType(document);
-            ExtractSalePricing(document, 
-                               ruralListing, 
+            ExtractSalePricing(document,
+                               ruralListing,
                                defaultSalePriceTextIfMissing,
                                defaultSoldPriceTextIfMissing,
                                cultureInfo);
@@ -2081,6 +2062,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             ruralListing.CouncilRates = ExtractRuralCouncilRates(document);
             ExtractBuildingDetails(document, ruralListing);
             ExtractRuralNewConstruction(document, ruralListing);
+            ExtractSaleDetails(document, ruralListing);
         }
 
         private static OpenRealEstate.Core.Rural.CategoryType ExtractRuralCategoryType(XContainer document)

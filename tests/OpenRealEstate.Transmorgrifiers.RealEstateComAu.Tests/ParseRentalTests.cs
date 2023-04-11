@@ -4,6 +4,7 @@ using OpenRealEstate.Core.Rental;
 using OpenRealEstate.FakeData;
 using OpenRealEstate.Testing;
 using OpenRealEstate.Transmorgrifiers.Core;
+using OpenRealEstate.Validation;
 using OpenRealEstate.Validation.Rental;
 using Shouldly;
 using System;
@@ -37,8 +38,8 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             result.Listings.Count.ShouldBe(1);
             result.Errors.Count.ShouldBe(0);
             result.UnhandledData.Count.ShouldBe(0);
-            RentalListingAssertHelpers.AssertRuralListing(result.Listings.First().Listing as RentalListing,
-                                                          expectedListing);
+            RentalListingAssertHelpers.AssertRentalListing(result.Listings.First().Listing as RentalListing,
+                                                           expectedListing);
         }
 
         [Theory]
@@ -101,7 +102,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             listing.StatusType.ShouldBe(expectedStatusType);
 
             var validator = new RentalListingValidator();
-            var validationResult = validator.Validate(listing, ruleSet: RentalListingValidator.StrictRuleSet);
+            var validationResult = validator.Validate(listing, ruleSet: RuleSetKeys.StrictRuleSet);
             validationResult.IsValid.ShouldBeTrue();
         }
 
@@ -114,9 +115,11 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             existingListing.Pricing.RentalPriceText = Guid.NewGuid().ToString();
             existingListing.Title = Guid.NewGuid().ToString();
             existingListing.Description = Guid.NewGuid().ToString();
+            existingListing.Pricing.HasTakenDeposit = true;
             
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rental-Current.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
             var newListing = reaXmlTransmorgrifier.Parse(reaXml)
                                                   .Listings
                                                   .First()
@@ -132,6 +135,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             listing.Pricing.RentalPriceText.ShouldBe(newListing.Pricing.RentalPriceText);
             listing.Title.ShouldBe(newListing.Title);
             listing.Description.ShouldBe(newListing.Description);
+            listing.Pricing.HasTakenDeposit.ShouldBe(newListing.Pricing.HasTakenDeposit);
         }
 
         [Fact]
@@ -234,6 +238,27 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             var expectedListing = FakeListings.CreateAFakeRentalListing();
 
             var reaXml = File.ReadAllText(FakeDataFolder + "REA-Rental-Current-PriceHasCents.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            AssertRentalListing(result, expectedListing);
+        }
+
+        [Theory]
+        [InlineData("Yes", true)]
+        [InlineData("No", false)]
+        public void GivenThePriceHasADepositPayed_Parse_ReturnsARentalAvailableListing(
+            string fileNamePostpendText,
+            bool hasTakenDeposit)
+        {
+            // Arrange.
+            var expectedListing = FakeListings.CreateAFakeRentalListing();
+            expectedListing.Pricing.HasTakenDeposit = hasTakenDeposit;
+
+            var reaXml = File.ReadAllText($"{FakeDataFolder}REA-Rental-Current-WithADepositPayed{fileNamePostpendText}.xml");
             var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
 
             // Act.

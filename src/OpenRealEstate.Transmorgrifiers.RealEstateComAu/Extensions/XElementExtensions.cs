@@ -271,18 +271,9 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
                 return null;
             }
 
-            // Sometimes, the data value _might_ be a decimal!
-            // So we should assume it's a decimal (to play it safe) then down-convert it to
-            // an int, which would then drop the decimal values.
-            if (decimal.TryParse(value, out var decimalNumber))
-            {
-                // Yep! we have something, so lets down-convert it.
-                return (int)decimalNumber;
-            }
-
-            var errorMessage = ParsingErrorMessage(value, "int", xElement, elementName);
-            throw new Exception(errorMessage);
+            return xElement.IntValueOrDefault(elementName);
         }
+
         internal static decimal DecimalValueOrDefault(this XElement xElement,
                                                       string elementName = null)
         {
@@ -322,6 +313,18 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions
             return bool.TryParse(value, out var boolValue)
                        ? boolValue
                        : value.ParseOneYesZeroNoToBool();
+        }
+
+        internal static bool? NullableBoolValueOrDefault(this XElement xElement,
+                                                         string elementName = null)
+        {
+            var value = xElement.ValueOrDefault(elementName);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            return xElement.BoolValueOrDefault(elementName);
         }
 
         internal static byte BoolOrByteValueOrDefault(this XElement xElement,

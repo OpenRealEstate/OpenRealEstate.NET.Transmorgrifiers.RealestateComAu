@@ -44,7 +44,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
 
         [Theory]
         [InlineData("REA-Rental-Current.xml")]
-        //[InlineData("REA-Segment-Rental-Current.xml")]
+        [InlineData("REA-Segment-Rental-Current.xml")]
         public void GivenTheFileREARentalCurrent_Parse_ReturnsARentalAvailableListing(string fileName)
         {
             // Arrange.

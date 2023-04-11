@@ -8,9 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
-
 using Newtonsoft.Json;
-
 using OpenRealEstate.Core;
 using OpenRealEstate.Core.Land;
 using OpenRealEstate.Core.Rental;
@@ -18,7 +16,6 @@ using OpenRealEstate.Core.Residential;
 using OpenRealEstate.Core.Rural;
 using OpenRealEstate.Transmorgrifiers.Core;
 using OpenRealEstate.Transmorgrifiers.RealEstateComAu.Extensions;
-
 using CategoryTypeHelpers = OpenRealEstate.Core.Land.CategoryTypeHelpers;
 
 namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu

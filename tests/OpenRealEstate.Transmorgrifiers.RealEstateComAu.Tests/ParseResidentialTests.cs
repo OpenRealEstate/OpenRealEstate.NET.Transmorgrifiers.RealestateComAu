@@ -773,7 +773,7 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
         }
 
         [Theory]
-        [InlineData("REA-Residential-Current.xml", "2, 39 Main Road, RICHMOND, Victoria 3121")] // Display == true/yes.
+        [InlineData("REA-Residential-Current.xml", "2/39 Main Road, RICHMOND, Victoria 3121")] // Display == true/yes.
         [InlineData("REA-Residential-Current-AddressDisplayIsNo.xml", "RICHMOND, Victoria 3121")] // Display == false/no.
         public void GivenTheFileREAResidentialWithSomeAddressDisplayValues_Parse_ReturnsAResidentialSoldListing(string fileName,
                                                                                                                 string expectedDisplayAddress)

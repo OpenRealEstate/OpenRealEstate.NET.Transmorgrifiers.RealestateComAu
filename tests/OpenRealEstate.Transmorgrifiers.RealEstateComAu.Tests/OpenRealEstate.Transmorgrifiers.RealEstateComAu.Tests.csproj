@@ -11,7 +11,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="OpenRealEstate.Testing" Version="117.0.0-beta" />
-    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="106.0.0-beta" />
+    <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="109.0.0-beta" />
     <PackageReference Include="OpenRealEstate.Validation" Version="118.0.0-beta" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>

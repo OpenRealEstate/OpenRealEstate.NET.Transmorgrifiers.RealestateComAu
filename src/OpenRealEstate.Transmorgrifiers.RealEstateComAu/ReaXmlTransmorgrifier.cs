@@ -628,8 +628,17 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu
             }
 
             // Headline & Description should have HTML removed. ref: https://partner.realestate.com.au/documentation/api/listings/elements
-            document.ValueOrDefaultIfExists(title => listing.Title = RemoveHtmlRegex.Replace(title, string.Empty), "headline");
-            document.ValueOrDefaultIfExists(description => listing.Description = RemoveHtmlRegex.Replace(description, string.Empty), "description");
+            document.ValueOrDefaultIfExists(title => 
+                listing.Title = !string.IsNullOrWhiteSpace(title) 
+                    ? RemoveHtmlRegex.Replace(title, string.Empty) 
+                    : null
+                , "headline");
+            document.ValueOrDefaultIfExists(description => 
+                listing.Description =
+                    !string.IsNullOrWhiteSpace(description) 
+                        ? RemoveHtmlRegex.Replace(description, string.Empty)
+                        : null
+                , "description");
 
             ExtractAddress(document, listing, addressDelimeter);
             ExtractAgents(document, listing);

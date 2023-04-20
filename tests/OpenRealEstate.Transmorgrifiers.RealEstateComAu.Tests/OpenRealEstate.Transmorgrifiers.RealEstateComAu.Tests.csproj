@@ -10,10 +10,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-    <PackageReference Include="OpenRealEstate.FakeData" Version="117.0.0-beta" />
-    <PackageReference Include="OpenRealEstate.Testing" Version="115.0.0-beta" />
+    <PackageReference Include="OpenRealEstate.Testing" Version="117.0.0-beta" />
     <PackageReference Include="OpenRealEstate.Transmorgrifiers.Json" Version="106.0.0-beta" />
-    <PackageReference Include="OpenRealEstate.Validation" Version="117.0.0-beta" />
+    <PackageReference Include="OpenRealEstate.Validation" Version="118.0.0-beta" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -105,6 +104,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample Data\Rental\REA-Segment-Rental-Current.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample Data\Residential\REA-Residential-Current-WithNoHeadlineAndNoDescription.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample Data\Residential\REA-Residential-Current-PriceHasCents.xml">

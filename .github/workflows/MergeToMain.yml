@@ -1,19 +1,22 @@
-name: Merge Pull Requests into 'main'
+name: Commits merged into the 'main branch or amanual run
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   packages: write
 
 env:
   DOTNET_NOLOGO: true
+  ARTIFACT_NAME: NuGet package artifact
+  ARTIFACT_PATH: ./artifacts
 
 jobs:
-  build_and_create_a_nuget:
+  build_and_pack_nuget:
+    name: Build and pack a NuGet package
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -28,34 +31,74 @@ jobs:
 
       - run: dotnet restore --verbosity minimal
 
-      - run: dotnet build --configuration Release -p:ContinuousIntegrationBuild=true -p:DebugType=Embedded -p:VersionPrefix=$VERSION_PREFIX --version-suffix $VERSION_SUFFIX
+      - run: dotnet build --configuration Release -p:DebugType=Embedded -p:ContinuousIntegrationBuild=true -p:VersionPrefix=$VERSION_PREFIX --version-suffix $VERSION_SUFFIX
 
       - run: dotnet test --configuration Release --no-build
 
-      - run: dotnet pack --configuration Release --no-build --output ./artifacts -p:DebugType=Embedded -p:VersionPrefix=$VERSION_PREFIX --version-suffix $VERSION_SUFFIX
+      - run: dotnet pack --configuration Release --no-build --output $ARTIFACT_PATH -p:DebugType=Embedded -p:VersionPrefix=$VERSION_PREFIX --version-suffix $VERSION_SUFFIX
 
+      # Save the package to the artifacts storage so we can use them in the "push" jobs.
       - name: Publish artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: NuGetPackage.${{ env.VERSION_PREFIX }}-${{ env.VERSION_SUFFIX }}
-          path: ./artifacts/
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_PATH }}
+
+  push_nuget_package_gpr:
+    name: Push NuGet package (GPR)
+    runs-on: ubuntu-latest
+    needs: build_and_pack_nuget
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_PATH }}
 
       - name: Publish to GPR
         run: |
-          dotnet nuget push "./artifacts/*.nupkg" \
+          dotnet nuget push "${{ env.ARTIFACT_PATH }}/*.nupkg" \
             --no-symbols \
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --source https://nuget.pkg.github.com/${{ github.repository_owner }}
 
+  push_nuget_package_feedz:
+    name: Push NuGet package (Feedz.io)
+    runs-on: ubuntu-latest
+    needs: build_and_pack_nuget
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_PATH }}
+
+      - name: Publish to Feedz.io
+        run: |
+          dotnet nuget push "${{ env.ARTIFACT_PATH }}/*.nupkg" \
+            --api-key ${{ secrets.FEEDZ_APIKEY }} \
+            --source https://f.feedz.io/openrealestate/openrealestate/nuget/index.json
+
+  push_nuget_package_myget:
+    name: Push NuGet package (MyGet)
+    runs-on: ubuntu-latest
+    needs: build_and_pack_nuget
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path:  ${{ env.ARTIFACT_PATH }}
+
       - name: Publish to MyGet.org
         run: |
-          dotnet nuget push "./artifacts/*.nupkg" \
+          dotnet nuget push "${{ env.ARTIFACT_PATH }}/*.nupkg" \
             --api-key ${{ secrets.MYGET_APIKEY }} \
             --source https://www.myget.org/F/openrealestate-net/api/v2/package
 
   tests:
+    name: Test code with code coverage
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -70,7 +113,7 @@ jobs:
       - run: dotnet test --configuration Debug --verbosity minimal --no-build --collect:"XPlat Code Coverage" --results-directory "./.codecoverage"
 
       - name: Code coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v2
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
           directory: "./.codecoverage"

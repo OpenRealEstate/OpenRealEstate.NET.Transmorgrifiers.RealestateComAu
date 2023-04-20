@@ -872,5 +872,21 @@ namespace OpenRealEstate.Transmorgrifiers.RealEstateComAu.Tests
             updatedListing.Pricing.SoldPrice.ShouldBe(580_000);
             updatedListing.Pricing.SoldPriceText.ShouldBe("$580,000");
         }
+
+        [Fact]
+        public void GivenSomeHeadlineAndDescription_Parse_ReturnsAResidentialAvailableListing()
+        {
+            // Arrange.
+            var reaXml = File.ReadAllText(FakeDataFolder + "REA-Residential-Current-WithNoHeadlineAndNoDescription.xml");
+            var reaXmlTransmorgrifier = new ReaXmlTransmorgrifier();
+
+            // Act.
+            var result = reaXmlTransmorgrifier.Parse(reaXml);
+
+            // Assert.
+            var listing = result.Listings.First().Listing as ResidentialListing;
+            listing.Title.ShouldBeNull();
+            listing.Description.ShouldBeNull();
+        }
     }
 }

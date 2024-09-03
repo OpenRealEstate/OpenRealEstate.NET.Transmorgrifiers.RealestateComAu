@@ -50,7 +50,7 @@ jobs:
     needs: build_and_pack_nuget
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.ARTIFACT_PATH }}
@@ -68,7 +68,7 @@ jobs:
     needs: build_and_pack_nuget
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.ARTIFACT_PATH }}
@@ -85,7 +85,7 @@ jobs:
     needs: build_and_pack_nuget
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path:  ${{ env.ARTIFACT_PATH }}
